@@ -1,5 +1,5 @@
 <script lang="ts">
-  import 'remixicon/fonts/remixicon.css'
+  import "remixicon/fonts/remixicon.css";
   import { onMount } from "svelte";
   import DialogToDelete from "./lib/DialogToDelete.svelte";
 
@@ -27,9 +27,9 @@
   let fileName: string;
   let filter: string | null;
   let query: string;
+  let queryFixed: string;
   let items: Item[];
   let content: string;
-  let showDialog = false;
 
   onMount(async () => {
     const res = await fetch("/item");
@@ -73,10 +73,11 @@
       const j: Res = await res.json();
       items = j.result.map((x) => {
         return {
-        name: x,
-        showModal: false,
-      }
-    });
+          name: x,
+          showModal: false,
+        };
+      });
+      queryFixed = query;
       state = State.Top;
     }
   };
@@ -91,7 +92,7 @@
       }}><i class="ri-add-circle-line" /></button
     >
     <input
-      class="w-1/2 rounded-full border p-1"
+      class="w-1/2 rounded-full border p-1 text-sm"
       bind:value={query}
       placeholder="search"
       on:keydown={(e) => e.key === "Enter" && search()}
@@ -99,24 +100,30 @@
   </div>
   {#if state === State.Top}
     <input
-      class="mb-2 mt-4 w-3/4 rounded-full border p-1"
+      class="mb-2 mt-4 w-3/4 rounded-full border p-1 text-sm"
       bind:value={filter}
       placeholder="filter"
     />
+    {#if queryFixed}
+      <div>Query: {queryFixed}</div>
+    {/if}
     <div class="w=5/6 flex flex-col items-start">
       {#if items}
         {#each filter ? items.filter( (x) => x.name.includes(filter) ) : items as item}
           <div
-            class="my-2 flex w-full max-w-sm justify-between border-b border-zinc-800"
+            class="my-2 flex w-40 items-center justify-between border-b border-zinc-800"
           >
-            <button class="line-clamp-1 w-40" on:click={() => readItem(item.name)}
+            <button
+              class="line-clamp-1 font-mono text-sm"
+              on:click={() => !item.showModal && readItem(item.name)}
               >{item.name}</button
             >
+            &nbsp;
             <button on:click={() => (item.showModal = true)}
-              ><i class="ri-delete-bin-2-line" /></button
+              ><i class="ri-delete-bin-2-line text-sm text-zinc-600" /></button
             >
-            <DialogToDelete showModal={item.showModal} {item} />
           </div>
+          <DialogToDelete bind:showModal={item.showModal} {item} />
         {/each}
       {/if}
     </div>
@@ -137,7 +144,7 @@
       placeholder="file name"
     />
     <textarea
-      class="h-3/4 w-full border font-mono"
+      class="h-3/4 w-full overflow-x-scroll border font-mono text-sm"
       rows="20"
       bind:value={content}
       placeholder="content"

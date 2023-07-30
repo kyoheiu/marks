@@ -5,9 +5,9 @@
   let dialog; // HTMLDialogElement
 
   const removeItem = async () => {
-    const _res = await fetch("/item",  {
+    const _res = await fetch("/item", {
       method: "DELETE",
-      body: item.name
+      body: item.name,
     });
     dialog.close();
     window.location.assign("/");
@@ -27,18 +27,20 @@
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div on:click|stopPropagation>
       <div class="mb-4 p-2 text-xl text-neutral-800">
-        Are you sure to delete <code class="bg-zinc-200 p-1 rounded-md">{item.name}</code>?<br />
+        Are you sure to delete <code class="rounded-md bg-zinc-200 p-1"
+          >{item.name}</code
+        >?<br />
         This action is irreversible.
       </div>
       <hr class="my-4 border-neutral-800" />
       <!-- svelte-ignore a11y-autofocus -->
       <div class="flex justify-between">
         <button
-          class="rounded-md border border-neutral-800 px-1 text-sm hover:bg-neutral-800 hover:text-slate-100"
+          class="rounded-md border-2 border-neutral-800 px-1 text-sm font-semibold hover:bg-neutral-800 hover:text-slate-100"
           on:click={() => dialog.close()}>cancel</button
         >
         <button
-          class="rounded-md border border-rose-500 px-1 text-sm text-rose-500 hover:bg-rose-500 hover:text-slate-50"
+          class="rounded-md border-2 border-rose-500 px-1 text-sm font-semibold text-rose-500 hover:bg-rose-500 hover:text-slate-50"
           on:click={() => removeItem()}>delete</button
         >
       </div>
