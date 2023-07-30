@@ -10,6 +10,8 @@ use axum::{
 use error::Error;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+use std::fs::Metadata;
+use std::time::UNIX_EPOCH;
 use tower_http::services::ServeDir;
 use tracing::info;
 
@@ -20,6 +22,12 @@ impl Core {
     fn default() -> Result<Self, Error> {
         Ok(Core {})
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Item {
+    name: String,
+    modified: u64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -65,10 +73,31 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
         let file = std::fs::read_to_string(format!("./data/{}", file_name))?;
         Ok(file.into_response())
     } else {
-        let mut result = Vec::new();
+        let mut result: Vec<Item> = Vec::new();
         for item in walkdir::WalkDir::new("./data") {
-            result.push(item?.file_name().to_str().unwrap().to_string());
+            let item = item?;
+            if item.file_type().is_dir() {
+                info!("Skipped directory: {:?}", item.file_name());
+                continue;
+            }
+            let file_name = item
+                .file_name()
+                .to_str()
+                .unwrap_or("UNKNWON FILE")
+                .to_string();
+            let metadata = item.metadata();
+            match metadata {
+                Ok(metadata) => result.push(Item {
+                    name: file_name,
+                    modified: to_modified(&metadata),
+                }),
+                Err(_) => result.push(Item {
+                    name: file_name,
+                    modified: 0,
+                }),
+            }
         }
+        result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
         Ok(Json(result).into_response())
     }
 }
@@ -83,12 +112,12 @@ async fn save_item(Json(payload): Json<Payload>) -> Result<(), Error> {
 
 #[debug_handler]
 async fn remove_item(body: String) -> Result<(), Error> {
-    Ok(std::fs::remove_file(format!("./data/{}",body.trim()))?)
+    Ok(std::fs::remove_file(format!("./data/{}", body.trim()))?)
 }
 
 #[debug_handler]
 async fn search(body: String) -> Result<impl IntoResponse, Error> {
-    let mut result = Vec::new();
+    let mut rg_result = Vec::new();
     let q = body.split_whitespace().collect::<Vec<&str>>();
     info!("query: {:?}", q);
     info!("dir: {}", std::env::var("PWD").unwrap());
@@ -103,12 +132,38 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
             info!("item: {}", item);
             if let Some(file_path) = item.lines().next() {
                 if let Some(file_name) = file_path.split("/").last() {
-                    result.push(file_name.to_string());
+                    rg_result.push(file_name.to_string());
                 }
             }
         }
-        Ok(Json(Res { result }).into_response())
+
+        let mut result = Vec::new();
+        for file_name in rg_result {
+            let metadata = std::fs::metadata(format!("./data/{}", file_name));
+            match metadata {
+                Ok(metadata) => result.push(Item {
+                    name: file_name,
+                    modified: to_modified(&metadata),
+                }),
+                Err(_) => result.push(Item {
+                    name: file_name,
+                    modified: 0,
+                }),
+            }
+        }
+
+        result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
+        Ok(Json(result).into_response())
     } else {
         Err(Error::Grep)
     }
+}
+
+fn to_modified(metadata: &Metadata) -> u64 {
+    metadata
+        .modified()
+        .unwrap_or(UNIX_EPOCH)
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or(std::time::Duration::ZERO)
+        .as_secs()
 }
