@@ -12,9 +12,9 @@ COPY ./axum ./
 RUN cargo build --release
 
 FROM debian:bookworm-slim
-WORKDIR /ltd
-COPY --from=frontend-builder /svelte/dist /ltd/static
-COPY --from=backend-builder /axum/target/release/ltd .
+WORKDIR /marks
+COPY --from=frontend-builder /svelte/dist /marks/static
+COPY --from=backend-builder /axum/target/release/marks .
 ENV RUST_LOG info
 EXPOSE 8080
-ENTRYPOINT [ "./ltd" ]
+ENTRYPOINT [ "./marks" ]

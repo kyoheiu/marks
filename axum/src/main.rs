@@ -1,23 +1,17 @@
 mod error;
 
 use axum::debug_handler;
-use axum::extract::{Json, Query, State};
-use axum::http::HeaderMap;
-use axum::response::{Html, IntoResponse, Redirect};
-use axum::Form;
+use axum::extract::{Json, Query};
+use axum::response::{Html, IntoResponse};
 use axum::{
     routing::{get, post},
     Router,
 };
 use error::Error;
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeMap, VecDeque};
-use std::env;
-use std::time::UNIX_EPOCH;
+use std::collections::BTreeMap;
 use tower_http::services::ServeDir;
-use tracing::{debug, info, warn};
-
-const COOKIE_NAME: &str = "ltd_auth";
+use tracing::info;
 
 #[derive(Clone)]
 struct Core {}
