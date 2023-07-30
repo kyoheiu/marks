@@ -1,0 +1,23 @@
+[package]
+name = "ltd"
+version = "1.1.2"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = { version = "0.6.18", features = ["macros"] }
+cookie = "0.17.0"
+jsonwebtoken = { version = "8.3.0", default-features = false }
+serde = { version = "1.0.163", features = ["derive"] }
+tokio = { version = "1.28.1", features = ["full"] }
+tower-cookies = "0.9.0"
+tower-http = { version = "0.4.0", features = ["fs"] }
+ldap3 = { version = "0.11.3", default-features = false, features = ["tls-rustls"] }
+serde_json = "1.0.99"
+ulid = "1.0.0"
+http = "0.2.9"
+tracing-subscriber = "0.3"
+tracing = "0.1.37"
+walkdir = "2.3.3"
+

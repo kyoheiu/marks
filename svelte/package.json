@@ -1,0 +1,34 @@
+{
+  "name": "ltd",
+  "private": true,
+  "version": "1.1.2",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "prettier --check 'src/**/*.{html,js,ts,svelte}'",
+    "lint:fix": "prettier --write 'src/**/*.{html,js,ts,svelte}'",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.4",
+    "@tsconfig/svelte": "^4.0.1",
+    "@zerodevx/svelte-toast": "^0.9.5",
+    "autoprefixer": "^10.4.14",
+    "license-checker": "^25.0.1",
+    "postcss": "^8.4.24",
+    "prettier": "^2.8.8",
+    "prettier-plugin-svelte": "^2.10.1",
+    "prettier-plugin-tailwindcss": "^0.4.0",
+    "svelte": "^3.58.0",
+    "svelte-check": "^3.3.1",
+    "tailwindcss": "^3.3.2",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "remixicon": "^3.4.0"
+  }
+}
