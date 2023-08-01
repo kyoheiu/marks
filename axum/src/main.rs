@@ -131,7 +131,6 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
     let mut rg_result = Vec::new();
     let q = body.split_whitespace().collect::<Vec<&str>>();
     info!("query: {:?}", q);
-    info!("dir: {}", std::env::var("PWD").unwrap());
     if let Ok(output) = std::process::Command::new("rg")
         .arg("-l")
         .args(q)

@@ -1,6 +1,9 @@
 <script lang="ts">
   import { state, reviewItem } from "./stores";
   import Upload from "./Upload.svelte";
+    import { get } from "svelte/store";
+
+  let content = get(state).content;
 </script>
 
 <div class="flex min-h-full flex-col">
@@ -17,12 +20,11 @@
       on:click={reviewItem}
       title="preview"><i class="ri-arrow-go-back-line" /></button
     >
-    <Upload />
+    <Upload content={content} />
   </div>
   <textarea
-    class="w-72 h-120 md:h-144 flex-grow border border-zinc-300 bg-white p-2 font-mono text-sm text-zinc-900 outline-none sm:w-120 md:w-144"
-    contenteditable="true"
-    bind:innerText={$state.content}
-    placeholder="Write here."
-  />
+    class="w-72 h-144 flex-grow border border-zinc-300 bg-white p-2 font-mono text-sm text-zinc-900 outline-none sm:w-120 md:w-144"
+    contenteditable=true
+    bind:value={content}
+   />
   </div>

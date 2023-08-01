@@ -2,6 +2,8 @@
   import toast, { Toaster } from "svelte-french-toast";
   import { state } from "./stores";
   import { get } from "svelte/store";
+  
+  export let content;
 
   interface Payload {
     original: string;
@@ -25,7 +27,7 @@
       body: JSON.stringify({
         original: s.fileName,
         new: s.newName,
-        content: s.content,
+        content: content,
       }),
     });
 
@@ -41,6 +43,7 @@
       return {
         ...s,
         fileName: s.newName,
+        content: content
       };
     });
 

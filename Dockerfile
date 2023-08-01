@@ -13,6 +13,7 @@ RUN cargo build --release
 
 FROM debian:bookworm-slim
 WORKDIR /marks
+RUN apt update && apt install ripgrep
 COPY --from=frontend-builder /svelte/dist /marks/static
 COPY --from=backend-builder /axum/target/release/marks .
 ENV RUST_LOG info
