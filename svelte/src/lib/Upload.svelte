@@ -2,7 +2,7 @@
   import toast, { Toaster } from "svelte-french-toast";
   import { state } from "./stores";
   import { get } from "svelte/store";
-  
+
   export let content;
 
   interface Payload {
@@ -43,7 +43,7 @@
       return {
         ...s,
         fileName: s.newName,
-        content: content
+        content: content,
       };
     });
 

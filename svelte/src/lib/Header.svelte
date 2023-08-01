@@ -3,7 +3,7 @@
 </script>
 
 <div
-  class="sticky top-0 flex h-12 w-full items-center justify-center border-b bg-white pb-2 pt-4"
+  class="sticky top-0 flex h-12 w-full items-center justify-center border-b bg-white py-2"
 >
   <a class="no-underline" href="/">marks</a>
   &nbsp; &nbsp;
@@ -12,7 +12,7 @@
   >
   &nbsp; &nbsp;
   <input
-    class="rounded-full border p-1 text-sm"
+    class="w-2/5 rounded-full border p-1 text-sm"
     bind:value={$state.query}
     placeholder="search"
     on:keydown={(e) => e.key === "Enter" && searchItem()}

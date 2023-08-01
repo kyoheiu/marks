@@ -6,7 +6,7 @@
 <div class="flex flex-col items-center">
   {#if !$state.queryFixed}
     <input
-      class="mb-2 mt-4 rounded-full border p-1 text-sm"
+      class="mb-2 mt-4 w-5/6 rounded-full border p-1 text-sm"
       bind:value={$state.filter}
       placeholder="filter"
     />
