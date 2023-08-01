@@ -1,0 +1,141 @@
+import { get, writable, type Writable } from "svelte/store";
+
+export class State {
+  page: Page;
+  items: Item[] | null;
+  filter: string | null;
+  query: string | null;
+  queryFixed: string | null;
+  seeMore: boolean;
+  fileName: string | null;
+  newName: string;
+  content: string | null;
+
+  constructor() {
+    this.page = Page.Top;
+    this.items = [];
+    this.filter = "";
+    this.query = "";
+    this.queryFixed = "";
+    this.seeMore = false;
+    this.fileName = "";
+    this.newName = "";
+    this.content = "";
+  }
+}
+
+export enum Page {
+  Top,
+  View,
+  Edit,
+}
+
+export interface Item {
+  name: string;
+  modified: number;
+  showModal: boolean;
+}
+
+export interface Res {
+  name: string;
+  modified: number;
+}
+
+export const state: Writable<State> = writable(new State());
+
+export const resetItem = async () => {
+  const res = await fetch("/item");
+  const j: Res[] = await res.json();
+  const items = j.map((x) => {
+    return { ...x, showModal: false };
+  });
+  state.update((s) => {
+    return {
+      ...s,
+      items: items,
+    };
+  });
+};
+
+export const addItem = () => {
+  state.update((s) => {
+    return {
+      ...new State(),
+      page: Page.Edit,
+    };
+  });
+};
+
+export const seeMoreItem = () => {
+  state.update((s) => {
+    return {
+      ...s,
+      seeMore: true,
+    };
+  });
+};
+
+export const readItem = async (name: string) => {
+  const res = await fetch(`/item?item=${name}`);
+  const body = await res.text();
+  state.update((s) => {
+    return {
+      ...new State(),
+      page: Page.View,
+      fileName: name,
+      newName: name,
+      content: body,
+    };
+  });
+};
+
+export const reviewItem = () => {
+  state.update((s) => {
+    return {
+      ...s,
+      page: Page.View,
+    };
+  });
+};
+
+export const searchItem = async () => {
+  const query = get(state).query;
+  const res = await fetch("/api/search", {
+    method: "POST",
+    body: query,
+  });
+  if (res.ok) {
+    const j: Res[] = await res.json();
+    console.log(j);
+    const items = j.map((x) => {
+      return {
+        ...x,
+        showModal: false,
+      };
+    });
+    state.update((s) => {
+      return {
+        ...new State(),
+        page: Page.Top,
+        items: items,
+        filter: null,
+        queryFixed: query,
+      };
+    });
+  }
+};
+
+export const editItem = () => {
+  state.update((s) => {
+    return {
+      ...s,
+      page: Page.Edit,
+    };
+  });
+};
+
+export const toTop = (s: Writable<State>) => {
+  state.update(() => {
+    return new State();
+  });
+};

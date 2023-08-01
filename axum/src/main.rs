@@ -11,9 +11,10 @@ use error::Error;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::fs::Metadata;
+use std::path::Path;
 use std::time::UNIX_EPOCH;
 use tower_http::services::ServeDir;
-use tracing::info;
+use tracing::{info, error};
 
 #[derive(Clone)]
 struct Core {}
@@ -32,8 +33,9 @@ struct Item {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Payload {
-    name: String,
-    body: String,
+    original: String,
+    new: String,
+    content: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -50,7 +52,7 @@ async fn main() -> Result<(), Error> {
     // build our application with a single route
     let app = Router::new()
         .route("/health", get(health))
-        .route("/item", get(read_item).post(save_item).delete(remove_item))
+        .route("/item", get(read_item).post(post_item).delete(remove_item))
         .route("/api/search", post(search))
         .nest_service("/", ServeDir::new("static"))
         .with_state(core);
@@ -70,14 +72,13 @@ async fn health() -> Html<&'static str> {
 #[debug_handler]
 async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl IntoResponse, Error> {
     if let Some(file_name) = q.get("item") {
-        let file = std::fs::read_to_string(format!("./data/{}", file_name))?;
+        let file = std::fs::read_to_string(path(&file_name))?;
         Ok(file.into_response())
     } else {
         let mut result: Vec<Item> = Vec::new();
         for item in walkdir::WalkDir::new("./data") {
             let item = item?;
             if item.file_type().is_dir() {
-                info!("Skipped directory: {:?}", item.file_name());
                 continue;
             }
             let file_name = item
@@ -103,16 +104,26 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
 }
 
 #[debug_handler]
-async fn save_item(Json(payload): Json<Payload>) -> Result<(), Error> {
-    Ok(std::fs::write(
-        format!("./data/{}", payload.name),
-        &payload.body,
-    )?)
+async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
+    if payload.original == payload.new {
+        Ok(std::fs::write(path(&payload.new), &payload.content)?)
+    } else {
+        if Path::new(&path(&payload.new)).exists() {
+            error!("A file with the same name exists.");
+            return Err(Error::SameName);
+        }
+        if !payload.original.is_empty() {
+            std::fs::rename(path(&payload.original), path(&payload.new))?;
+        } else {
+            std::fs::write(path(&payload.new), payload.content)?;
+        }
+        Ok(())
+    }
 }
 
 #[debug_handler]
 async fn remove_item(body: String) -> Result<(), Error> {
-    Ok(std::fs::remove_file(format!("./data/{}", body.trim()))?)
+    Ok(std::fs::remove_file(path(body.trim()))?)
 }
 
 #[debug_handler]
@@ -129,7 +140,6 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
     {
         let output = String::from_utf8(output.stdout)?;
         for item in output.lines() {
-            info!("item: {}", item);
             if let Some(file_path) = item.lines().next() {
                 if let Some(file_name) = file_path.split("/").last() {
                     rg_result.push(file_name.to_string());
@@ -139,7 +149,7 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
 
         let mut result = Vec::new();
         for file_name in rg_result {
-            let metadata = std::fs::metadata(format!("./data/{}", file_name));
+            let metadata = std::fs::metadata(path(&file_name));
             match metadata {
                 Ok(metadata) => result.push(Item {
                     name: file_name,
@@ -155,6 +165,7 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
         result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
         Ok(Json(result).into_response())
     } else {
+        error!("ripgrep did not work successfully.");
         Err(Error::Grep)
     }
 }
@@ -166,4 +177,8 @@ fn to_modified(metadata: &Metadata) -> u64 {
         .duration_since(UNIX_EPOCH)
         .unwrap_or(std::time::Duration::ZERO)
         .as_secs()
+}
+
+fn path(file_name: &str) -> String {
+    format!("./data/{}", file_name)
 }

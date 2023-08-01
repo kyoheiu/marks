@@ -13,6 +13,7 @@ pub enum Error {
     FromUtf8(String),
     SystemTime,
     Grep,
+    SameName,
 }
 
 impl std::error::Error for Error {}
@@ -28,6 +29,7 @@ impl std::fmt::Display for Error {
             Error::FromUtf8(s) => s,
             Error::SystemTime => "SystemTimeError.",
             Error::Grep => "Cannot finish searching properly.",
+            Error::SameName => "A file with the same name exists.",
         };
         write!(f, "{}", printable)
     }
@@ -92,6 +94,7 @@ impl IntoResponse for Error {
             Error::FromUtf8(s) => s,
             Error::SystemTime => "SystemTimeError.".to_string(),
             Error::Grep => "Cannot finish searching properly.".to_string(),
+            Error::SameName => "A file with the same name exists.".to_string(),
         };
         (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()
     }

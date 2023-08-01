@@ -1,3 +1,7 @@
+lint:
+	cd axum && cargo fmt
+	cd svelte && npm run lint:fix
+
 dev:
 	cd svelte && npm run build
 	cp -r ./svelte/dist/* ./axum/static
