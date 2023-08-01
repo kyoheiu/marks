@@ -14,7 +14,7 @@ use std::fs::Metadata;
 use std::path::Path;
 use std::time::UNIX_EPOCH;
 use tower_http::services::ServeDir;
-use tracing::{info, error};
+use tracing::{error, info};
 
 #[derive(Clone)]
 struct Core {}
@@ -46,7 +46,7 @@ struct Res {
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     tracing_subscriber::fmt().init();
-    info!("Initialized log.");
+    info!("Initialized logger.");
     let core = Core::default()?;
 
     // build our application with a single route
