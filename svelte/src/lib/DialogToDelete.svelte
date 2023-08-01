@@ -1,14 +1,25 @@
 <script>
+  import { get } from "svelte/store";
+  import { state } from "./stores";
+  import toast, { Toaster } from "svelte-french-toast";
+
   export let showModal; // boolean
   export let item; // string
-
   let dialog; // HTMLDialogElement
 
   const deleteItem = async () => {
-    const _res = await fetch("/item", {
+    const res = await fetch("/item", {
       method: "DELETE",
-      body: item.name,
+      body: item,
     });
+    if (!res.ok) {
+      dialog.close();
+      const message = await res.text();
+      toast.error(`Error occured: ${message}`, {
+        duration: 2000,
+      });
+      return;
+    }
     dialog.close();
     window.location.assign("/");
   };
@@ -16,6 +27,7 @@
   $: if (dialog && showModal) dialog.showModal();
 </script>
 
+<Toaster />
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <div class="m-auto">
   <dialog
@@ -28,7 +40,7 @@
     <div on:click|stopPropagation>
       <div class="mb-4 break-words p-2 text-xl text-neutral-800">
         Are you sure to delete <code class="rounded-md bg-sky-100 p-1"
-          >{item.name}</code
+          >{item}</code
         >?<br />
         This action is irreversible.
       </div>
