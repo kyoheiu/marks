@@ -87,6 +87,7 @@ export const readItem = async (name: string) => {
       content: body,
     };
   });
+  window.scrollTo(0, 0);
 };
 
 export const reviewItem = () => {
@@ -122,6 +123,7 @@ export const searchItem = async () => {
         queryFixed: query,
       };
     });
+    window.scrollTo(0, 0);
   }
 };
 
