@@ -34,10 +34,10 @@
           /></button
         >
       </div>
-      <DialogToDelete bind:showModal={item.showModal} {item} />
+      <DialogToDelete bind:showModal={item.showModal} item={item.name} />
     {/each}
   {/if}
-  {#if !$state.filter && !$state.queryFixed && !$state.seeMore}
+  {#if $state.items.length > 5 && !$state.filter && !$state.queryFixed && !$state.seeMore}
     <button class="m-2" on:click={seeMoreItem} title="see more"
       ><i class="ri-more-2-line" /></button
     >
