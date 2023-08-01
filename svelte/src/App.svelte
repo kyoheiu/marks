@@ -8,6 +8,10 @@
   import View from "./lib/View.svelte";
   import Edit from "./lib/Edit.svelte";
 
+  if (history.scrollRestoration) {
+    history.scrollRestoration = "manual";
+  }
+
   onMount(async () => {
     resetItem();
   });
@@ -24,5 +28,5 @@
       <Edit />
     {/if}
   </div>
-  <Footer />
+  <!-- <Footer /> -->
 </main>
