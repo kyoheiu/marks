@@ -1,5 +1,7 @@
 import { get, writable, type Writable } from "svelte/store";
 
+export const DEFAULT_LIST_NUMBER = 8;
+
 export class State {
   page: Page;
   items: Item[] | null;

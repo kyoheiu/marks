@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { readItem, state } from "./stores";
+  import { DEFAULT_LIST_NUMBER, readItem, state } from "./stores";
   import DialogToDelete from "./DialogToDelete.svelte";
   import moment from "moment";
 
@@ -9,7 +9,7 @@
 </script>
 
 <div class="grid grid-cols-1 gap-2 p-2 sm:grid-cols-2">
-  {#each $state.filter ? $state.items.filter( (x) => x.name.includes($state.filter) ) : $state.seeMore ? $state.items : $state.items.slice(0, 8) as item}
+  {#each $state.filter ? $state.items.filter( (x) => x.name.includes($state.filter) ) : $state.seeMore ? $state.items : $state.items.slice(0, DEFAULT_LIST_NUMBER) as item}
     <div class="relative h-32 w-60 rounded-md bg-white p-2">
       <button
         class="w-56 truncate text-left text-lg font-semibold"

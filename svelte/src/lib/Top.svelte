@@ -1,7 +1,7 @@
 <script lang="ts">
   import DialogToDelete from "./DialogToDelete.svelte";
   import Item from "./Item.svelte";
-  import { state, readItem, seeMoreItem } from "./stores";
+  import { state, readItem, seeMoreItem, DEFAULT_LIST_NUMBER } from "./stores";
 </script>
 
 <div class="flex flex-col items-center">
@@ -20,7 +20,7 @@
   {#if $state.items}
     <Item />
   {/if}
-  {#if $state.items.length > 5 && !$state.filter && !$state.queryFixed && !$state.seeMore}
+  {#if $state.items.length > DEFAULT_LIST_NUMBER && !$state.filter && !$state.queryFixed && !$state.seeMore}
     <button
       class="m-2 rounded-md bg-white p-2"
       on:click={seeMoreItem}
