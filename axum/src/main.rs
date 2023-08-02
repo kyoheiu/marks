@@ -15,6 +15,7 @@ use std::path::Path;
 use std::time::UNIX_EPOCH;
 use tower_http::services::ServeDir;
 use tracing::{error, info};
+use walkdir::DirEntry;
 
 #[derive(Clone)]
 struct Core {}
@@ -28,6 +29,7 @@ impl Core {
 #[derive(Debug, Serialize, Deserialize)]
 struct Item {
     name: String,
+    desc: String,
     modified: u64,
 }
 
@@ -72,7 +74,7 @@ async fn health() -> Html<&'static str> {
 #[debug_handler]
 async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl IntoResponse, Error> {
     if let Some(file_name) = q.get("item") {
-        let file = std::fs::read_to_string(path(&file_name))?;
+        let file = std::fs::read_to_string(to_path_string(&file_name))?;
         Ok(file.into_response())
     } else {
         let mut result: Vec<Item> = Vec::new();
@@ -81,22 +83,7 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
             if item.file_type().is_dir() {
                 continue;
             }
-            let file_name = item
-                .file_name()
-                .to_str()
-                .unwrap_or("UNKNWON FILE")
-                .to_string();
-            let metadata = item.metadata();
-            match metadata {
-                Ok(metadata) => result.push(Item {
-                    name: file_name,
-                    modified: to_modified(&metadata),
-                }),
-                Err(_) => result.push(Item {
-                    name: file_name,
-                    modified: 0,
-                }),
-            }
+            result.push(get_item(&item));
         }
         result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
         Ok(Json(result).into_response())
@@ -106,16 +93,22 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
 #[debug_handler]
 async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
     if payload.original == payload.new {
-        Ok(std::fs::write(path(&payload.new), &payload.content)?)
+        Ok(std::fs::write(
+            to_path_string(&payload.new),
+            &payload.content,
+        )?)
     } else {
-        if Path::new(&path(&payload.new)).exists() {
+        if Path::new(&to_path_string(&payload.new)).exists() {
             error!("A file with the same name exists.");
             return Err(Error::SameName);
         }
         if !payload.original.is_empty() {
-            std::fs::rename(path(&payload.original), path(&payload.new))?;
+            std::fs::rename(
+                to_path_string(&payload.original),
+                to_path_string(&payload.new),
+            )?;
         } else {
-            std::fs::write(path(&payload.new), payload.content)?;
+            std::fs::write(to_path_string(&payload.new), payload.content)?;
         }
         Ok(())
     }
@@ -123,7 +116,7 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
 
 #[debug_handler]
 async fn remove_item(body: String) -> Result<(), Error> {
-    Ok(std::fs::remove_file(path(body.trim()))?)
+    Ok(std::fs::remove_file(to_path_string(body.trim()))?)
 }
 
 #[debug_handler]
@@ -148,17 +141,7 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
 
         let mut result = Vec::new();
         for file_name in rg_result {
-            let metadata = std::fs::metadata(path(&file_name));
-            match metadata {
-                Ok(metadata) => result.push(Item {
-                    name: file_name,
-                    modified: to_modified(&metadata),
-                }),
-                Err(_) => result.push(Item {
-                    name: file_name,
-                    modified: 0,
-                }),
-            }
+            result.push(get_item_search(&file_name));
         }
 
         result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
@@ -178,6 +161,51 @@ fn to_modified(metadata: &Metadata) -> u64 {
         .as_secs()
 }
 
-fn path(file_name: &str) -> String {
+fn to_path_string(file_name: &str) -> String {
     format!("./data/{}", file_name)
+}
+
+fn get_item(item: &DirEntry) -> Item {
+    let name = item
+        .file_name()
+        .to_str()
+        .unwrap_or("UNKNWON FILE")
+        .to_string();
+
+    let path = item.path();
+    let desc = match std::fs::read_to_string(path) {
+        Ok(s) => s.chars().take(100).collect::<String>().trim().to_string(),
+        Err(_) => "".to_string(),
+    };
+
+    // get modified time (UNIX time).
+    let modified = match item.metadata() {
+        Ok(m) => to_modified(&m),
+        Err(_) => 0,
+    };
+
+    Item {
+        name,
+        desc,
+        modified,
+    }
+}
+
+fn get_item_search(name: &str) -> Item {
+    let desc = match std::fs::read_to_string(std::path::Path::new(&to_path_string(name))) {
+        Ok(s) => s.chars().take(100).collect::<String>().trim().to_string(),
+        Err(_) => "".to_string(),
+    };
+
+    // get modified time (UNIX time).
+    let modified = match std::fs::metadata(&to_path_string(name)) {
+        Ok(m) => to_modified(&m),
+        Err(_) => 0,
+    };
+
+    Item {
+        name: name.to_string(),
+        desc,
+        modified,
+    }
 }
