@@ -28,6 +28,7 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
+    "moment": "^2.29.4",
     "remixicon": "^3.4.0",
     "showdown": "^2.1.0",
     "svelte-french-toast": "^1.2.0"
