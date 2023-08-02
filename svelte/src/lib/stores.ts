@@ -32,12 +32,14 @@ export enum Page {
 
 export interface Item {
   name: string;
+  desc: string;
   modified: number;
   showModal: boolean;
 }
 
 export interface Res {
   name: string;
+  desc: string;
   modified: number;
 }
 
@@ -46,7 +48,7 @@ export const state: Writable<State> = writable(new State());
 export const resetItem = async () => {
   const res = await fetch("/item");
   const j: Res[] = await res.json();
-  const items = j.map((x) => {
+  const items: Item[] = j.map((x) => {
     return { ...x, showModal: false };
   });
   state.update((s) => {

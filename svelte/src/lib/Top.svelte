@@ -1,5 +1,6 @@
 <script lang="ts">
   import DialogToDelete from "./DialogToDelete.svelte";
+  import Item from "./Item.svelte";
   import { state, readItem, seeMoreItem } from "./stores";
 </script>
 
@@ -8,7 +9,7 @@
     <input
       class="mb-2 mt-4 w-5/6 rounded-full border p-1 text-sm"
       bind:value={$state.filter}
-      placeholder="filter"
+      placeholder="Filter file name"
     />
   {/if}
   {#if $state.queryFixed}
@@ -17,29 +18,13 @@
 </div>
 <div class="flex flex-col items-center">
   {#if $state.items}
-    {#each $state.filter ? $state.items.filter( (x) => x.name.includes($state.filter) ) : $state.seeMore ? $state.items : $state.items.slice(0, 5) as item}
-      <div
-        class="my-2 flex w-48 items-center justify-between border-b border-zinc-800"
-      >
-        <button
-          class="truncate text-sm font-semibold"
-          on:click={() => !item.showModal && readItem(item.name)}
-          title="view">{item.name}</button
-        >
-        &nbsp;
-        <button on:click={() => (item.showModal = true)}
-          ><i
-            class="ri-delete-bin-2-line text-sm text-zinc-600"
-            title="delete"
-          /></button
-        >
-      </div>
-      <DialogToDelete bind:showModal={item.showModal} item={item.name} />
-    {/each}
+    <Item />
   {/if}
   {#if $state.items.length > 5 && !$state.filter && !$state.queryFixed && !$state.seeMore}
-    <button class="m-2" on:click={seeMoreItem} title="see more"
-      ><i class="ri-more-2-line" /></button
+    <button
+      class="m-2 rounded-md bg-white p-2"
+      on:click={seeMoreItem}
+      title="see more">See all</button
     >
   {/if}
 </div>

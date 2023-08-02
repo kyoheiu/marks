@@ -28,5 +28,4 @@
       <Edit />
     {/if}
   </div>
-  <!-- <Footer /> -->
 </main>

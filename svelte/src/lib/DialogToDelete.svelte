@@ -39,7 +39,7 @@
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div on:click|stopPropagation>
       <div class="mb-4 break-words p-2 text-xl text-neutral-800">
-        Are you sure to delete <code class="rounded-md bg-sky-100 p-1"
+        Are you sure to delete <code class="rounded-md bg-sky-200 p-1"
           >{item}</code
         >?<br />
         This action is irreversible.

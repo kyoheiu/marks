@@ -14,7 +14,7 @@
   <input
     class="w-2/5 rounded-full border p-1 text-sm"
     bind:value={$state.query}
-    placeholder="search"
+    placeholder="Search"
     on:keydown={(e) => e.key === "Enter" && searchItem()}
   />
 </div>
