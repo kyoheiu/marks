@@ -18,6 +18,7 @@
         class="col-span-4 h-8 border border-zinc-300 px-2 font-mono text-sm"
         bind:value={$state.newName}
         placeholder="file name"
+        on:keydown={(e) => e.key === "Enter" && e.ctrlKey && save(content)}
       />
       <button
         class="box-border h-6 rounded-full border border-sky-500 bg-white px-2 text-sm text-sky-500"
