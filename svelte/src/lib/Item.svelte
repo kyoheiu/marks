@@ -18,7 +18,7 @@
           title="view">{item.name}</button
         >
         {#if item.name.split(".").pop() === "md"}
-          <i class="ri-markdown-fill text-indigo-500" />
+          <i class="ri-markdown-fill text-sky-500" />
         {/if}
       </div>
       <div class="mb-4 line-clamp-2 h-10 py-1 font-mono text-sm text-zinc-500">
