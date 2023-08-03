@@ -19,7 +19,7 @@
 
 <main class="flex min-h-screen flex-col items-center">
   <Header />
-  <div class="flex-grow">
+  <div class="grow">
     {#if $state.page === Page.Top}
       <Top />
     {:else if $state.page === Page.View}
