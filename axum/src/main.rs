@@ -124,10 +124,10 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
     let mut rg_result = Vec::new();
     let q = body.split_whitespace().collect::<Vec<&str>>();
     info!("query: {:?}", q);
-    if let Ok(output) = std::process::Command::new("rg")
-        .arg("-l")
+    if let Ok(output) = std::process::Command::new(&std::env::var("SHELL")?)
+        .arg("-c")
+        .args(["rg", "-l"])
         .args(q)
-        .arg("./data")
         .output()
     {
         let output = String::from_utf8(output.stdout)?;
@@ -141,7 +141,7 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
 
         let mut result = Vec::new();
         for file_name in rg_result {
-            result.push(get_item_search(&file_name));
+            result.push(get_item_searched(&file_name));
         }
 
         result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
@@ -191,7 +191,7 @@ fn get_item(item: &DirEntry) -> Item {
     }
 }
 
-fn get_item_search(name: &str) -> Item {
+fn get_item_searched(name: &str) -> Item {
     let desc = match std::fs::read_to_string(std::path::Path::new(&to_path_string(name))) {
         Ok(s) => s.chars().take(100).collect::<String>().trim().to_string(),
         Err(_) => "".to_string(),

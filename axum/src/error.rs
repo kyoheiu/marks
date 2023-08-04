@@ -9,6 +9,7 @@ pub enum Error {
     WalkDir(String),
     Json(String),
     FromUtf8(String),
+    Env,
     SystemTime,
     Grep,
     SameName,
@@ -23,6 +24,7 @@ impl std::fmt::Display for Error {
             Error::WalkDir(s) => s,
             Error::Json(s) => s,
             Error::FromUtf8(s) => s,
+            Error::Env => "Cannot read env SHELL.",
             Error::SystemTime => "SystemTimeError.",
             Error::Grep => "Cannot finish searching properly.",
             Error::SameName => "A file with the same name exists.",
@@ -61,6 +63,12 @@ impl From<std::string::FromUtf8Error> for Error {
     }
 }
 
+impl From<std::env::VarError> for Error {
+    fn from(_err: std::env::VarError) -> Self {
+        Error::Env
+    }
+}
+
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
         let body = match self {
@@ -68,6 +76,7 @@ impl IntoResponse for Error {
             Error::WalkDir(s) => s,
             Error::Json(s) => s,
             Error::FromUtf8(s) => s,
+            Error::Env => "Cannot read env SHELL.".to_string(),
             Error::SystemTime => "SystemTimeError.".to_string(),
             Error::Grep => "Cannot finish searching properly.".to_string(),
             Error::SameName => "A file with the same name exists.".to_string(),
