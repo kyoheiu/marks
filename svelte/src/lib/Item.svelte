@@ -21,7 +21,7 @@
           class="text-zinc-500"
           on:click={() => (item.showModal = true)}
           title="delete"> 
-          <i class="ri-close-circle-fill text-zinc-500 text-xs"></i>
+          <i class="ri-close-circle-fill text-zinc-500 text-xs hover:text-zinc-900"></i>
           </button>
       </div>
       <div class="mb-4 line-clamp-2 h-8 py-1 font-mono text-xs text-zinc-500">

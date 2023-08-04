@@ -13,23 +13,21 @@
 </script>
 
 <div class="flex min-h-full flex-col items-center">
-  <div class="sticky top-12 flex w-full items-center justify-center bg-sky-200">
-    <div class="w-full flex px-1 py-2">
-      <div class="grow truncate">
+  <div class="sticky top-12 flex w-64 sm:w-120 md:w-144 px-1 py-2 justify-center items-start bg-sky-200">
+      <div class="grow break-all leading-5">
         {$state.fileName}
       </div>
       <button
-        class="box-border w-12 h-6 rounded-full bg-sky-500 px-2 text-sm text-white"
+        class="ml-2 box-border w-12 h-6 rounded-full bg-sky-500 hover:bg-sky-600 px-2 text-sm text-white"
         on:click={editItem} title="edit"><i class="ri-file-edit-line" /></button
       >
         <button
           class="ml-4"
           on:click={() => (showModal = true)}
           title="delete">
-          <i class="ri-delete-bin-2-line text-zinc-500 text-sm"></i>
+          <i class="ri-delete-bin-2-line text-zinc-500 hover:text-zinc-900 text-sm"></i>
           </button>
       <DialogToDelete bind:showModal bind:item={$state.fileName} />
-    </div>
   </div>
 
   <div
