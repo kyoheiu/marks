@@ -38,21 +38,21 @@
   >
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div on:click|stopPropagation>
-      <div class="mb-4 break-words p-2">
-        Are you sure to delete <code class="rounded-md bg-zinc-300 p-1"
+      <div class="mb-4 break-all p-2">
+        Are you sure to delete <code class="rounded-md bg-zinc-200 p-1"
           >{item}</code
         >?<br />
         This action is irreversible.
       </div>
-      <hr class="my-4 border-neutral-800" />
+      <hr class="my-4 border-zinc-900" />
       <!-- svelte-ignore a11y-autofocus -->
       <div class="flex justify-between">
         <button
-          class="rounded-md border-2 border-neutral-800 px-1 text-sm font-semibold hover:bg-neutral-800 hover:text-slate-100"
+          class="rounded-md border-2 border-zinc-900 px-1 text-sm font-semibold hover:bg-zinc-900 hover:text-white"
           on:click={() => dialog.close()}>cancel</button
         >
         <button
-          class="rounded-md border-2 border-rose-500 px-1 text-sm font-semibold text-rose-500 hover:bg-rose-500 hover:text-slate-50"
+          class="rounded-md border-2 border-red-500 px-1 text-sm font-semibold text-red-500 hover:bg-red-500 hover:text-white"
           on:click={() => deleteItem()}>delete</button
         >
       </div>
