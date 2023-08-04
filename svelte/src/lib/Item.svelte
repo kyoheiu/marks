@@ -20,9 +20,12 @@
         <button
           class="text-zinc-500"
           on:click={() => (item.showModal = true)}
-          title="delete"> 
-          <i class="ri-close-circle-fill text-zinc-500 text-xs hover:text-zinc-900"></i>
-          </button>
+          title="delete"
+        >
+          <i
+            class="ri-close-circle-fill text-xs text-zinc-500 hover:text-zinc-900"
+          />
+        </button>
       </div>
       <div class="mb-4 line-clamp-2 h-8 py-1 font-mono text-xs text-zinc-500">
         {#if item.desc}
@@ -36,9 +39,9 @@
           {toDuration(item.modified)}
         </span>
         {#if item.name.split(".").pop() === "md"}
-          <i class="ml-auto ri-markdown-fill text-sky-500" />
+          <i class="ri-markdown-fill ml-auto text-sky-500" />
         {:else}
-        &nbsp;
+          &nbsp;
         {/if}
       </div>
       <DialogToDelete bind:showModal={item.showModal} item={item.name} />

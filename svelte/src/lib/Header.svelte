@@ -12,7 +12,7 @@
   >
   &nbsp; &nbsp;
   <input
-    class="w-2/5 rounded-full border py-1 px-2 text-sm"
+    class="w-2/5 rounded-full border px-2 py-1 text-sm"
     bind:value={$state.query}
     placeholder="Search"
     on:keydown={(e) => e.key === "Enter" && searchItem()}
