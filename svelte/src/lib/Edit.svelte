@@ -12,18 +12,18 @@
 <div class="flex min-h-full flex-col items-center">
   <div class="flex justify-center">
     <div
-      class="sticky top-12 grid w-64 grid-cols-7 items-center gap-2 bg-sky-200 p-2 sm:w-120 md:w-144"
+      class="sticky top-12 flex w-full items-center bg-sky-200 p-2"
     >
       <input
-        class="col-span-4 h-8 border border-zinc-300 px-2 font-mono text-sm"
+        class="w-32 sm:w-80 md:w-96 h-8 border border-zinc-300 px-2 font-mono text-sm"
         bind:value={$state.newName}
         placeholder="file name"
         on:keydown={(e) => e.key === "Enter" && e.ctrlKey && save(content)}
       />
       <button
-        class="box-border h-6 rounded-full border border-sky-500 bg-white px-2 text-sm text-sky-500"
+        class="box-border mx-2 w-12 h-6 rounded-full border border-sky-500 bg-white px-2 text-sm text-sky-500"
         on:click={reviewItem}
-        title="preview"><i class="ri-arrow-go-back-line" /></button
+        title="back to view"><i class="ri-arrow-go-back-line" /></button
       >
       <Upload {content} />
     </div>

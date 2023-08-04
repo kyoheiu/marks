@@ -31,15 +31,15 @@
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <div class="m-auto">
   <dialog
-    class="w-5/6 max-w-sm rounded-md bg-slate-100"
+    class="w-7/8 max-w-sm rounded-md"
     bind:this={dialog}
     on:close={() => (showModal = false)}
     on:click|self={() => dialog.close()}
   >
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div on:click|stopPropagation>
-      <div class="mb-4 break-words p-2 text-xl text-neutral-800">
-        Are you sure to delete <code class="rounded-md bg-sky-200 p-1"
+      <div class="mb-4 break-words p-2">
+        Are you sure to delete <code class="rounded-md bg-zinc-300 p-1"
           >{item}</code
         >?<br />
         This action is irreversible.

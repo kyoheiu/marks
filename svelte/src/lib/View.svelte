@@ -14,19 +14,20 @@
 
 <div class="flex min-h-full flex-col items-center">
   <div class="sticky top-12 flex w-full items-center justify-center bg-sky-200">
-    <div class="grid w-64 grid-cols-7 gap-2 px-1 py-2 sm:w-120 md:w-144">
-      <div class="col-span-4 truncate">
+    <div class="w-full flex px-1 py-2">
+      <div class="grow truncate">
         {$state.fileName}
       </div>
       <button
-        class="col-span-2 box-border h-6 rounded-full bg-sky-500 px-2 text-sm text-white"
-        on:click={editItem}><i class="ri-file-edit-line" /></button
+        class="box-border w-12 h-6 rounded-full bg-sky-500 px-2 text-sm text-white"
+        on:click={editItem} title="edit"><i class="ri-file-edit-line" /></button
       >
-      <button
-        class="box-border h-6 rounded-full border border-red-400 bg-white px-2 text-sm text-red-400"
-        on:click={() => (showModal = true)}
-        ><i class="ri-delete-bin-2-line" /></button
-      >
+        <button
+          class="ml-4"
+          on:click={() => (showModal = true)}
+          title="delete">
+          <i class="ri-delete-bin-2-line text-zinc-500 text-sm"></i>
+          </button>
       <DialogToDelete bind:showModal bind:item={$state.fileName} />
     </div>
   </div>

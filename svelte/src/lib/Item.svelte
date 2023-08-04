@@ -10,33 +10,36 @@
 
 <div class="grid grid-cols-1 gap-2 p-2 sm:grid-cols-2">
   {#each $state.filter ? $state.items.filter( (x) => x.name.includes($state.filter) ) : $state.seeMore ? $state.items : $state.items.slice(0, DEFAULT_LIST_NUMBER) as item}
-    <div class="h-32 w-60 rounded-md bg-white p-2">
-      <div class="flex items-end justify-between">
+    <div class="h-30 w-60 rounded-md bg-white p-2">
+      <div class="flex items-start justify-between border-b">
         <button
           class="w-52 truncate text-left text-lg font-medium"
           on:click={() => !item.showModal && readItem(item.name)}
           title="view">{item.name}</button
         >
-        {#if item.name.split(".").pop() === "md"}
-          <i class="ri-markdown-fill text-sky-500" />
-        {/if}
+        <button
+          class="text-zinc-500"
+          on:click={() => (item.showModal = true)}
+          title="delete"> 
+          <i class="ri-close-circle-fill text-zinc-500 text-xs"></i>
+          </button>
       </div>
-      <div class="mb-4 line-clamp-2 h-10 py-1 font-mono text-sm text-zinc-500">
+      <div class="mb-4 line-clamp-2 h-8 py-1 font-mono text-xs text-zinc-500">
         {#if item.desc}
           {item.desc}
         {:else}
           <i>No contents.</i>
         {/if}
       </div>
-      <div class="bottom-1 flex w-56 items-center justify-between">
+      <div class="bottom-1 flex w-56 items-end">
         <span class="text-xs text-zinc-500">
           {toDuration(item.modified)}
         </span>
-        <button
-          class="text-zinc-500"
-          on:click={() => (item.showModal = true)}
-          title="delete"><i class="ri-delete-bin-2-line text-sm" /></button
-        >
+        {#if item.name.split(".").pop() === "md"}
+          <i class="ml-auto ri-markdown-fill text-sky-500" />
+        {:else}
+        &nbsp;
+        {/if}
       </div>
       <DialogToDelete bind:showModal={item.showModal} item={item.name} />
     </div>
