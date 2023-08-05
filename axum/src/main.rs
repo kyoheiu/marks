@@ -74,7 +74,7 @@ async fn health() -> Html<&'static str> {
 #[debug_handler]
 async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl IntoResponse, Error> {
     if let Some(file_name) = q.get("item") {
-        let file = std::fs::read_to_string(to_path_string(&file_name))?;
+        let file = std::fs::read_to_string(to_path_string(file_name))?;
         Ok(file.into_response())
     } else {
         let mut result: Vec<Item> = Vec::new();
@@ -124,16 +124,17 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
     let mut rg_result = Vec::new();
     let q = body.split_whitespace().collect::<Vec<&str>>();
     info!("query: {:?}", q);
-    if let Ok(output) = std::process::Command::new(&std::env::var("SHELL")?)
-        .arg("-c")
-        .args(["rg", "-l"])
+    if let Ok(output) = std::process::Command::new("rg")
+        .arg("-l")
         .args(q)
+        .arg("./data")
         .output()
     {
+        info!("{:?}", output);
         let output = String::from_utf8(output.stdout)?;
         for item in output.lines() {
             if let Some(file_path) = item.lines().next() {
-                if let Some(file_name) = file_path.split("/").last() {
+                if let Some(file_name) = file_path.split('/').last() {
                     rg_result.push(file_name.to_string());
                 }
             }
@@ -198,7 +199,7 @@ fn get_item_searched(name: &str) -> Item {
     };
 
     // get modified time (UNIX time).
-    let modified = match std::fs::metadata(&to_path_string(name)) {
+    let modified = match std::fs::metadata(to_path_string(name)) {
         Ok(m) => to_modified(&m),
         Err(_) => 0,
     };
