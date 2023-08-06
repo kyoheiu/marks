@@ -12,6 +12,7 @@ Minimal self-hostable online text editor.
 - Search with `ripgrep` (supports regex pattern).
 - Filter file names.
 - Press `<C-CR>` in editable area to save.
+- Lightweight: Compressed docker image size is ~50MB.
 
 ## deploy
 `sudo docker run -d -v /path/to/data:/marks/data --name marks -p 8080:8080 kyoheiudev/marks:0.2.5`
