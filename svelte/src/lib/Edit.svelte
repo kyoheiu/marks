@@ -1,12 +1,53 @@
 <script lang="ts">
   import { state, reviewItem } from "./stores";
-  import Upload from "./Upload.svelte";
   import { get } from "svelte/store";
-  import { Toaster } from "svelte-french-toast";
-  import { save } from "./Upload";
+  import { toast, Toaster } from "svelte-french-toast";
 
   let content = get(state).content;
   let edited = false;
+
+  export const save = async (content: string) => {
+    const s = get(state);
+    if (s.newName === "" || !s.newName) {
+      toast.error("File name required.", {
+        duration: 2000,
+      });
+      return;
+    }
+    const res = await fetch(`/item`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        original: s.fileName,
+        new: s.newName,
+        content: content,
+      }),
+    });
+
+    if (!res.ok) {
+      const message = await res.text();
+      toast.error(`Error occured: ${message}`, {
+        duration: 2000,
+      });
+      return;
+    }
+
+    state.update((s) => {
+      return {
+        ...s,
+        fileName: s.newName,
+        content: content,
+      };
+    });
+
+    toast.success("Saved.", {
+      duration: 2000,
+    });
+
+    edited = false;
+  };
 
   const detectChange = () => {
     edited = true;
@@ -35,7 +76,18 @@
       on:click={reviewItem}
       title="back to view"><i class="ri-arrow-go-back-line" /></button
     >
-    <Upload {edited} {content} />
+    <div class="relative flex items-start">
+      <button
+        class="box-border h-6 w-12 rounded-full bg-sky-500 px-2 text-sm text-white hover:bg-sky-600"
+        on:click={() => save(content)}
+        title="save"><i class="ri-file-upload-line" title="save" /></button
+      >
+      {#if edited}
+        <i
+          class="ri-checkbox-blank-circle-fill absolute right-0 text-xs text-red-400"
+        />
+      {/if}
+    </div>
   </div>
   <textarea
     class="h-120 w-64 flex-grow border border-zinc-300 bg-white p-3 font-mono text-sm text-zinc-900 outline-none sm:h-144 sm:w-120 md:w-144"
