@@ -10,7 +10,7 @@
     @apply underline;
   }
   p {
-    @apply my-3;
+    @apply mb-3;
   }
   img,
   video {
