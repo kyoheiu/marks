@@ -107,9 +107,8 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
                 to_path_string(&payload.original),
                 to_path_string(&payload.new),
             )?;
-        } else {
-            std::fs::write(to_path_string(&payload.new), payload.content)?;
         }
+        std::fs::write(to_path_string(&payload.new), payload.content)?;
         Ok(())
     }
 }
