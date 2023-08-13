@@ -2,11 +2,13 @@
   import { state, reviewItem } from "./stores";
   import { get } from "svelte/store";
   import { toast, Toaster } from "svelte-french-toast";
+  import { onDestroy } from "svelte";
 
-  let content = get(state).content;
+  const ms = 2000;
+
   let edited = false;
 
-  export const save = async (content: string) => {
+  export const save = async () => {
     const s = get(state);
     if (s.newName === "" || !s.newName) {
       toast.error("File name required.", {
@@ -22,7 +24,7 @@
       body: JSON.stringify({
         original: s.fileName,
         new: s.newName,
-        content: content,
+        content: s.content,
       }),
     });
 
@@ -38,12 +40,8 @@
       return {
         ...s,
         fileName: s.newName,
-        content: content,
+        content: s.content,
       };
-    });
-
-    toast.success("Saved.", {
-      duration: 2000,
     });
 
     edited = false;
@@ -55,10 +53,19 @@
 
   const keyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter" && e.ctrlKey) {
-      save(content);
+      save();
       edited = false;
     }
   };
+
+  const interval = setInterval(() => {
+    if (get(state).newName && edited) {
+      save();
+      edited = false;
+    }
+  }, ms);
+
+  onDestroy(() => clearInterval(interval));
 </script>
 
 <Toaster />
@@ -72,27 +79,28 @@
       on:keydown={(e) => keyDown(e)}
     />
     <button
-      class="mx-2 box-border h-6 w-12 rounded-full border border-sky-500 bg-white px-2 text-sm text-sky-500 hover:bg-sky-500 hover:text-white"
+      class="ml-auto mr-2 box-border h-6 w-12 rounded-full border border-sky-500 bg-white px-2 text-sm text-sky-500 hover:bg-sky-500 hover:text-white"
       on:click={reviewItem}
       title="back to view"><i class="ri-arrow-go-back-line" /></button
     >
-    <div class="relative flex items-start">
-      <button
-        class="box-border h-6 w-12 rounded-full bg-sky-500 px-2 text-sm text-white md:hover:bg-sky-600"
-        on:click={() => save(content)}
-        title="save"><i class="ri-file-upload-line" title="save" /></button
-      >
-      {#if edited}
-        <i
-          class="ri-checkbox-blank-circle-fill absolute right-0 text-xs text-red-400"
-        />
+    <button
+      class="box-border h-6 w-14 text-sm text-zinc-500"
+      on:click={save}
+      title="click / tap to manually save"
+    >
+      {#if !$state.newName && !$state.content && !edited}
+        ...
+      {:else if edited}
+        <i class="ri-loop-right-line" />
+      {:else}
+        <i class="ri-check-line" /> saved
       {/if}
-    </div>
+    </button>
   </div>
   <textarea
     class="h-120 w-64 flex-grow border border-zinc-300 bg-white p-3 font-mono text-sm text-zinc-900 outline-none sm:h-144 sm:w-120 md:w-144"
     contenteditable="true"
-    bind:value={content}
+    bind:value={$state.content}
     placeholder="Write here."
     on:input={detectChange}
     on:keydown={(e) => keyDown(e)}
