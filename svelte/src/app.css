@@ -5,7 +5,7 @@
 @layer base {
   body {
     @apply m-auto
-    bg-gray-200 text-gray-900
+    bg-background text-text
     ;
   }
   a {

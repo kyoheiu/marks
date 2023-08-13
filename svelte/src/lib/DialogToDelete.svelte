@@ -31,28 +31,25 @@
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <div class="m-auto">
   <dialog
-    class="w-7/8 max-w-sm rounded-md"
+    class="w-7/8 max-w-sm drop-shadow-2xl"
     bind:this={dialog}
     on:close={() => (showModal = false)}
     on:click|self={() => dialog.close()}
   >
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div on:click|stopPropagation>
-      <div class="mb-4 break-all p-2">
-        Are you sure to delete <code class="bg-zinc-200 rounded-md p-1"
-          >{item}</code
-        >?<br />
+      <div class="mb-2 break-all p-2">
+        Are you sure to delete <span class="underline">{item}</span>?<br />
         This action is irreversible.
       </div>
-      <hr class="border-zinc-900 my-4" />
+      <hr class="my-4 text-border" />
       <!-- svelte-ignore a11y-autofocus -->
       <div class="flex justify-between">
-        <button
-          class="border-zinc-900 hover:bg-zinc-900 hover:text-white rounded-md border-2 px-1 text-sm font-semibold"
-          on:click={() => dialog.close()}>cancel</button
+        <button class="px-1 text-sm" on:click={() => dialog.close()}
+          >cancel</button
         >
         <button
-          class="border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-md border-2 px-1 text-sm font-semibold"
+          class="bg-warning px-2 py-1 text-sm text-item_background"
           on:click={() => deleteItem()}>delete</button
         >
       </div>

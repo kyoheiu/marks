@@ -14,7 +14,7 @@
 
 <div class="flex min-h-full flex-col items-center">
   <div
-    class="mb-6 w-64 flex-grow break-words rounded-md bg-gray-50 p-3 font-mono text-sm sm:w-120 md:w-144"
+    class="mb-6 mt-4 w-64 flex-grow break-words rounded-md bg-item_background p-3 font-mono text-sm sm:w-120 md:w-144"
   >
     {#if $state.content.length === 0}
       <i>No contents.</i>
