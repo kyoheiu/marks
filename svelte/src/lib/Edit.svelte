@@ -72,7 +72,7 @@
 <div class="mt-2 flex min-h-full flex-col items-center justify-center">
   <div class="sticky top-12 flex w-full items-center p-2">
     <input
-      class="shadow-inner h-8 w-32 px-2 font-mono text-sm sm:w-64 md:w-96"
+      class="h-8 w-32 px-2 font-mono text-sm shadow-inner sm:w-64 md:w-96"
       bind:value={$state.newName}
       placeholder="file name"
       on:input={detectChange}
@@ -98,7 +98,7 @@
     </button>
   </div>
   <textarea
-    class="shadow-inner h-120 w-64 flex-grow p-3 font-mono text-sm outline-none sm:h-144 sm:w-120 md:w-144"
+    class="h-120 w-64 flex-grow p-3 font-mono text-sm shadow-inner outline-none sm:h-144 sm:w-120 md:w-144"
     contenteditable="true"
     bind:value={$state.content}
     placeholder="Write here."

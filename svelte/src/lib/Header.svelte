@@ -1,12 +1,18 @@
 <script lang="ts">
-import DialogToDelete from "./DialogToDelete.svelte";
+  import DialogToDelete from "./DialogToDelete.svelte";
   import { Page, addItem, editItem, searchItem, state } from "./stores";
 
   let showModal = false;
 </script>
 
-<div class="flex flex-col items-center sticky top-0 w-full bg-background text-sm shadow-md">
-  <div class={$state.page === Page.Top ? "flex h-12 w-64 sm:w-96 items-baseline py-2": "flex h-12 w-64 sm:w-120 md:w-144 items-baseline py-2"}>
+<div
+  class="sticky top-0 flex w-full flex-col items-center bg-background text-sm shadow-md"
+>
+  <div
+    class={$state.page === Page.Top
+      ? "flex h-12 w-64 items-baseline py-2 sm:w-96"
+      : "flex h-12 w-64 items-baseline py-2 sm:w-120 md:w-144"}
+  >
     <a class="no-underline" href="/">marks</a>
     &nbsp; &nbsp;
     <button
@@ -29,21 +35,21 @@ import DialogToDelete from "./DialogToDelete.svelte";
         <div class="grow break-all leading-5">
           {$state.fileName}
         </div>
-          <button
-            class="ml-auto text-xs text-subtle"
-            on:click={() => (showModal = true)}
-            title="delete"
-          >
-            Delete
-          </button>
-          &nbsp; &nbsp;
+        <button
+          class="ml-auto text-xs text-subtle"
+          on:click={() => (showModal = true)}
+          title="delete"
+        >
+          Delete
+        </button>
+        &nbsp; &nbsp;
         <button
           class="rounded bg-base px-2 py-1 text-item_background"
           on:click={editItem}
           title="edit">Edit</button
         >
       </div>
-        <DialogToDelete bind:showModal={showModal} item={$state.fileName} />
+      <DialogToDelete bind:showModal item={$state.fileName} />
     </div>
   {/if}
 </div>
