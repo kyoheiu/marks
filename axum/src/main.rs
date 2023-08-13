@@ -93,10 +93,8 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
 #[debug_handler]
 async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
     if payload.original == payload.new {
-        Ok(std::fs::write(
-            to_path_string(&payload.new),
-            &payload.content,
-        )?)
+        std::fs::write(to_path_string(&payload.new), &payload.content)?;
+        Ok(info!("Updated item: {}", payload.new))
     } else {
         if Path::new(&to_path_string(&payload.new)).exists() {
             error!("A file with the same name exists.");
@@ -107,15 +105,19 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
                 to_path_string(&payload.original),
                 to_path_string(&payload.new),
             )?;
+            std::fs::write(to_path_string(&payload.new), payload.content)?;
+            Ok(info!("Renamed item: {}", payload.new))
+        } else {
+            std::fs::write(to_path_string(&payload.new), payload.content)?;
+            Ok(info!("Created item: {}", payload.new))
         }
-        std::fs::write(to_path_string(&payload.new), payload.content)?;
-        Ok(())
     }
 }
 
 #[debug_handler]
 async fn remove_item(body: String) -> Result<(), Error> {
-    Ok(std::fs::remove_file(to_path_string(body.trim()))?)
+    std::fs::remove_file(to_path_string(body.trim()))?;
+    Ok(info!("Removed item: {}", body.trim()))
 }
 
 #[debug_handler]
@@ -129,7 +131,6 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
         .arg("./data")
         .output()
     {
-        info!("{:?}", output);
         let output = String::from_utf8(output.stdout)?;
         for item in output.lines() {
             if let Some(file_path) = item.lines().next() {
