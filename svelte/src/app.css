@@ -4,7 +4,9 @@
 
 @layer base {
   body {
-    @apply m-auto text-zinc-900 bg-sky-200;
+    @apply m-auto
+    bg-gray-200 text-gray-900
+    ;
   }
   a {
     @apply underline;
@@ -35,16 +37,16 @@
     @apply mb-3 mt-6 font-bold;
   }
   :not(pre) > code {
-    @apply rounded-md bg-slate-200 px-1 font-mono text-sm text-slate-800;
+    @apply rounded-md px-1 font-mono text-sm;
   }
   pre {
-    @apply m-2 overflow-x-scroll border border-slate-200 p-3;
+    @apply m-2 overflow-x-scroll border p-3;
   }
   pre > code {
     @apply font-mono;
   }
   blockquote {
-    @apply m-2 border-l-2 border-slate-200 pl-2 italic;
+    @apply m-2 border-l-2 pl-2 italic;
   }
   ul {
     @apply m-2 list-disc px-2;
