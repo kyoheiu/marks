@@ -13,6 +13,7 @@ export default {
       border: "#9ca3af", // gray-400
       subtle: "#4b5563", // gray-600
       warning: "#b91c1c", // red-700
+      edit: "#0d9488", // teal-600
     },
     extend: {
       spacing: {

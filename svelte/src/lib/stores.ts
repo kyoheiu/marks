@@ -94,6 +94,21 @@ export const readItem = async (name: string) => {
   window.scrollTo(0, 0);
 };
 
+export const editItemDirectly = async (name: string) => {
+  const res = await fetch(`/item?item=${name}`);
+  const body = await res.text();
+  state.update((s) => {
+    return {
+      ...new State(),
+      page: Page.Edit,
+      fileName: name,
+      newName: name,
+      content: body,
+    };
+  });
+  window.scrollTo(0, 0);
+};
+
 export const reviewItem = () => {
   state.update((s) => {
     return {

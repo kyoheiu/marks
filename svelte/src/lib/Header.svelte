@@ -8,11 +8,7 @@
 <div
   class="sticky top-0 flex w-full flex-col items-center bg-background text-sm shadow-md"
 >
-  <div
-    class={$state.page === Page.Top
-      ? "flex h-12 w-64 items-baseline py-2 sm:w-96"
-      : "flex h-12 w-64 items-baseline py-2 sm:w-120 md:w-144"}
-  >
+  <div class="flex h-12 w-64 items-baseline py-2 sm:w-120 md:w-144">
     <a class="no-underline" href="/">marks</a>
     &nbsp; &nbsp;
     <button
