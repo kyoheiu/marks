@@ -21,7 +21,7 @@
   {/if}
   {#if $state.items.length > DEFAULT_LIST_NUMBER && !$state.filter && !$state.queryFixed && !$state.seeMore}
     <button
-      class="mb-2 rounded border border-base bg-item_background px-2 py-1 text-sm text-base"
+      class="mb-2 rounded border bg-item_background px-2 py-1 text-sm" 
       on:click={seeMoreItem}
       title="see more">See all</button
     >

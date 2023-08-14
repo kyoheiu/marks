@@ -87,16 +87,16 @@
       title="back to view">View</button
     >
     <button
-      class="h-6 w-14 text-sm text-subtle"
+      class="h-6 w-6 text-sm text-subtle"
       on:click={save}
       title="click / tap to manually save"
     >
       {#if !$state.newName && !$state.content && !edited}
         ...
       {:else if edited}
-        <i class="ri-loop-right-line" />
+      <i class="ri-checkbox-blank-circle-fill text-unsaved" />
       {:else}
-        <i class="ri-check-line" /> saved
+      <i class="ri-checkbox-circle-fill text-saved" />
       {/if}
     </button>
   </div>

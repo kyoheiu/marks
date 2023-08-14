@@ -13,7 +13,7 @@
     &nbsp; &nbsp;
     <button
       on:click={addItem}
-      class="rounded border border-base bg-item_background px-2 py-1 text-sm text-base"
+      class="rounded border border-base_border bg-item_background px-2 py-1 text-xs text-base"
       >New</button
     >
     &nbsp; &nbsp;
@@ -32,18 +32,18 @@
           {$state.fileName}
         </div>
         <button
+          class="rounded bg-edit px-2 py-1 text-item_background"
+          on:click={editItem}
+          title="edit">Edit</button
+        >
+        &nbsp; &nbsp;
+        <button
           class="ml-auto text-xs text-subtle"
           on:click={() => (showModal = true)}
           title="delete"
         >
           Delete
         </button>
-        &nbsp; &nbsp;
-        <button
-          class="rounded bg-base px-2 py-1 text-item_background"
-          on:click={editItem}
-          title="edit">Edit</button
-        >
       </div>
       <DialogToDelete bind:showModal item={$state.fileName} />
     </div>

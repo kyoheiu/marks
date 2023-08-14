@@ -13,25 +13,25 @@
   };
 </script>
 
-<div class="my-4 flex flex-col items-center rounded bg-item_background">
+<div class="my-4 flex flex-col items-center bg-item_background">
   {#each $state.filter ? $state.items.filter( (x) => x.name.includes($state.filter) ) : $state.seeMore ? $state.items : $state.items.slice(0, DEFAULT_LIST_NUMBER) as item}
     <div
-      class="hover:bg-background flex h-16 w-64 list-none items-center border-b-2 border-background px-2 sm:w-120 md:w-144"
+      class="flex h-16 w-64 list-none items-center border-b-4 border-background px-2 sm:w-120 md:w-144"
     >
-      <span
-        class="mr-4 h-4 w-4 rounded-full bg-background border-2 border-item_background"
-      />
+      <i class="mr-4 w-4 ri-arrow-right-circle-line text-subtle" />
       <div class="flex flex-col items-start">
         <button
           on:click={() => !item.showModal && readItem(item.name)}
           class="w-36 truncate text-left sm:w-72 md:w-96">{item.name}</button
         >
         {#if item.desc}
-          <div class="hidden w-40 truncate text-sm sm:inline sm:w-72 md:w-96">
+          <div class="hidden w-40 truncate text-sm text-subtle sm:inline sm:w-72 md:w-96">
             {item.desc}
           </div>
         {:else}
-          <div class=" hidden w-40 truncate text-sm italic sm:inline sm:w-72 md:w-96">
+          <div
+            class=" hidden w-40 truncate text-sm text-subtle italic sm:inline sm:w-72 md:w-96"
+          >
             No contents.
           </div>
         {/if}
@@ -40,12 +40,12 @@
         >{toDuration(item.modified)}</span
       >
       <button
-        class="mx-2 w-10 text-xs rounded border border-edit bg-item_background text-edit px-2 py-1"
+        class="mx-2 w-10 rounded border border-edit_border bg-item_background px-2 py-1 text-xs text-edit"
         on:click={() => !item.showModal && editItemDirectly(item.name)}
         >Edit</button
       >
       <button
-        class="w-6 text-xs"
+        class="w-6 text-xs text-subtle"
         on:click={() => (item.showModal = true)}
         title="delete"
       >
