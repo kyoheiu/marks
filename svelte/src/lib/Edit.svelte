@@ -73,7 +73,7 @@
 
 <Toaster />
 <div class="mt-2 flex min-h-full flex-col items-center justify-center">
-  <div class="sticky top-12 flex w-full items-center p-2">
+  <div class="flex w-full py-2 items-center mb-2">
     <input
       class="h-8 w-32 px-2 font-mono text-sm shadow-inner sm:w-64 md:w-96"
       bind:value={$state.newName}
@@ -82,21 +82,21 @@
       on:keydown={(e) => keyDown(e)}
     />
     <button
-      class="ml-auto mr-2 rounded bg-base px-2 py-1 text-sm text-item_background"
+      class="w-11 text-xs ml-auto rounded bg-base_color px-2 py-1 text-item_background"
       on:click={reviewItem}
       title="back to view">View</button
     >
     <button
-      class="h-6 w-6 text-sm text-subtle"
+      class="ml-3 mr-2 h-6 w-6 text-sm text-subtle"
       on:click={save}
       title="click / tap to manually save"
     >
       {#if !$state.newName && !$state.content && !edited}
         ...
       {:else if edited}
-      <i class="ri-checkbox-blank-circle-fill text-unsaved" />
+        <i class="ri-checkbox-blank-circle-fill text-unsaved text-xs" />
       {:else}
-      <i class="ri-checkbox-circle-fill text-saved" />
+        <i class="ri-checkbox-circle-fill text-saved text-xs" />
       {/if}
     </button>
   </div>

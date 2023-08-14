@@ -49,7 +49,7 @@
           >cancel</button
         >
         <button
-          class="bg-warning px-2 py-1 text-sm text-item_background"
+          class="rounded bg-warning px-2 py-1 text-sm text-item_background"
           on:click={() => deleteItem()}>delete</button
         >
       </div>

@@ -1,6 +1,6 @@
 import { get, writable, type Writable } from "svelte/store";
 
-export const DEFAULT_LIST_NUMBER = 8;
+export const DEFAULT_LIST_NUMBER = 10;
 
 export class State {
   page: Page;
