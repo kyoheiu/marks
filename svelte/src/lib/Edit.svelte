@@ -10,6 +10,8 @@
 
   export const save = async () => {
     const s = get(state);
+    const fileName = s.fileName;
+    const newName = s.newName;
     if (s.newName === "" || !s.newName) {
       toast.error("File name required.", {
         duration: 2000,
@@ -22,8 +24,8 @@
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        original: s.fileName,
-        new: s.newName,
+        original: fileName,
+        new: newName,
         content: s.content,
       }),
     });
@@ -39,7 +41,7 @@
     state.update((s) => {
       return {
         ...s,
-        fileName: s.newName,
+        fileName: newName,
         content: s.content,
       };
     });
@@ -59,7 +61,8 @@
   };
 
   const interval = setInterval(() => {
-    if (get(state).newName && edited) {
+    const s = get(state);
+    if (s.newName && edited) {
       save();
       edited = false;
     }
