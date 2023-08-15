@@ -78,7 +78,8 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
         Ok(file.into_response())
     } else {
         let mut result: Vec<Item> = Vec::new();
-        for item in walkdir::WalkDir::new("./data") {
+        let walker = walkdir::WalkDir::new("./data").into_iter();
+        for item in walker.filter_entry(|x| !is_hidden(x)) {
             let item = item?;
             if item.file_type().is_dir() {
                 continue;
@@ -210,4 +211,10 @@ fn get_item_searched(name: &str) -> Item {
         desc,
         modified,
     }
+}
+fn is_hidden(entry: &DirEntry) -> bool {
+    entry.file_name()
+         .to_str()
+         .map(|s| s.starts_with('.'))
+         .unwrap_or(false)
 }
