@@ -1,5 +1,6 @@
 <script lang="ts">
   import DialogToDelete from "./DialogToDelete.svelte";
+    import Top from "./Top.svelte";
   import { Page, addItem, editItem, searchItem, state } from "./stores";
 
   let showModal = false;
@@ -11,11 +12,19 @@
   <div class="flex h-12 w-64 items-baseline pt-2 sm:w-120 md:w-144">
     <a class=" no-underline" href="/">marks</a>
     &nbsp; &nbsp;
+    {#if $state.page === Page.Top}
     <button
       on:click={addItem}
-      class="rounded border-2 border-base_border bg-item_background px-2 py-1 text-xs text-base_color"
+      class="rounded bg-base_color px-2 py-1 text-xs font-semibold text-item_background"
       >+New</button
     >
+    {:else}
+    <button
+      on:click={addItem}
+      class="rounded border-2 border-base_border text-base_color px-2 py-1 text-xs font-semibold bg-item_background"
+      >+New</button
+    >
+    {/if}
     &nbsp; &nbsp;
     <div class="relative ml-auto">
       <i class="ri-search-line absolute left-1 top-1 text-border" />

@@ -18,46 +18,38 @@
     <div
       class="my-2 flex h-16 w-64 list-none items-center rounded bg-item_background px-2 shadow sm:w-120 md:w-144"
     >
-      <div class="flex flex-col items-start">
+      <span class="mx-2 inner h-4 w-4 rounded-full bg-background" />
+      <div class="ml-2 flex flex-col items-start">
         <button
           on:click={() => !item.showModal && readItem(item.name)}
           title="view this item"
-          class="w-36 cursor-pointer truncate text-left text-sm sm:w-72 sm:text-base md:w-96"
+          class="hover:text-base_color w-32 cursor-pointer truncate text-left text-sm sm:w-72 sm:text-base md:w-96"
           >{item.name}</button
         >
         {#if item.desc}
           <div
-            class="hidden w-40 truncate text-sm text-subtle sm:inline sm:w-72 md:w-96"
+            class="hidden truncate text-sm text-desc sm:inline sm:w-72 md:w-96"
           >
             {item.desc}
           </div>
         {:else}
           <div
-            class=" hidden w-40 truncate text-sm italic text-subtle sm:inline sm:w-72 md:w-96"
+            class="hidden truncate text-sm italic text-desc sm:inline sm:w-72 md:w-96"
           >
             No contents.
           </div>
         {/if}
       </div>
-      <span class="hidden w-12 text-right text-xs text-subtle sm:inline sm:w-16"
+      <span
+        class="ml-2 text-right text-xs text-subtle w-12"
         >{toDuration(item.modified)}</span
       >
       <button
-        class="ml-2 w-11 rounded border-2 border-base_border bg-item_background px-1 py-1 text-xs text-base_color sm:ml-4"
-        on:click={() => !item.showModal && readItem(item.name)}
-        title="edit">View</button
-      >
-      <button
-        class="ml-2 w-11 rounded border-2 border-edit_border bg-item_background px-2 py-1 text-xs text-edit sm:ml-2"
-        on:click={() => !item.showModal && editItemDirectly(item.name)}
-        title="edit">Edit</button
-      >
-      <button
-        class="ml-2 hidden w-4 text-xs text-subtle sm:inline"
+        class="hidden sm:inline font-light rounded border border-border mr-2 ml-4 w-12 px-1 py-1 text-xs text-warning"
         on:click={() => (item.showModal = true)}
         title="delete"
       >
-        <i class="ri-close-line" />
+      Delete
       </button>
       <DialogToDelete bind:showModal={item.showModal} item={item.name} />
     </div>

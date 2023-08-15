@@ -82,7 +82,7 @@
       on:keydown={(e) => keyDown(e)}
     />
     <button
-      class="ml-auto w-11 rounded bg-base_color px-2 py-1 text-xs text-item_background"
+      class="font-semibold ml-auto w-11 rounded bg-base_color px-2 py-1 text-xs text-item_background"
       on:click={reviewItem}
       title="back to view">View</button
     >
@@ -96,7 +96,7 @@
       {:else if edited}
         <i class="ri-checkbox-blank-circle-fill text-xs text-unsaved" />
       {:else}
-        <i class="ri-checkbox-circle-fill text-xs text-saved" />
+        <i class="ri-checkbox-circle-fill text-xs text-edit" />
       {/if}
     </button>
   </div>
