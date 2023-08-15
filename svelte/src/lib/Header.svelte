@@ -13,12 +13,12 @@
     &nbsp; &nbsp;
     <button
       on:click={addItem}
-      class="rounded border border-base_border bg-item_background px-2 py-1 text-xs text-base_color"
+      class="rounded border-2 border-base_border bg-item_background px-2 py-1 text-xs text-base_color"
       >+New</button
     >
     &nbsp; &nbsp;
     <input
-      class="ml-auto w-2/5 px-2 py-1 shadow-inner"
+      class="rounded-full ml-auto w-2/5 px-3 py-1 shadow-inner"
       bind:value={$state.query}
       placeholder="Search"
       on:keydown={(e) => e.key === "Enter" && searchItem()}

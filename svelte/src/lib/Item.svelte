@@ -16,10 +16,9 @@
 <div
   class="my-4 flex flex-col items-center divide-y-8 divide-background bg-item_background"
 >
-  {#each $state.filter ? $state.items.filter( (x) => x.name.includes($state.filter) ) : $state.seeMore ? $state.items : $state.items.slice(0, DEFAULT_LIST_NUMBER) as item}
+  {#each $state.filter ? $state.items.filter( (x) => x.name.includes($state.filter) ) : $state.showAll ? $state.items : $state.items.slice(0, DEFAULT_LIST_NUMBER) as item}
     <div class="flex h-16 w-64 list-none items-center px-2 sm:w-120 md:w-144">
       <div class="flex flex-col items-start">
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
         <button
           on:click={() => !item.showModal && readItem(item.name)}
           title="view this item"
@@ -44,12 +43,12 @@
         >{toDuration(item.modified)}</span
       >
       <button
-        class="ml-2 sm:ml-4 w-11 rounded border border-base_border bg-item_background px-1 py-1 text-xs text-base_color"
+        class="ml-2 sm:ml-4 w-11 rounded border-2 border-base_border bg-item_background px-1 py-1 text-xs text-base_color"
         on:click={() => !item.showModal && readItem(item.name)}
         title="edit">View</button
       >
       <button
-        class="ml-2 sm:ml-2 w-11 rounded border border-edit_border bg-item_background px-2 py-1 text-xs text-edit"
+        class="ml-2 sm:ml-2 w-11 rounded border-2 border-edit_border bg-item_background px-2 py-1 text-xs text-edit"
         on:click={() => !item.showModal && editItemDirectly(item.name)}
         title="edit">Edit</button
       >

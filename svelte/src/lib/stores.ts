@@ -8,7 +8,7 @@ export class State {
   filter: string | null;
   query: string | null;
   queryFixed: string | null;
-  seeMore: boolean;
+  showAll: boolean;
   fileName: string | null;
   newName: string;
   content: string | null;
@@ -19,7 +19,7 @@ export class State {
     this.filter = "";
     this.query = "";
     this.queryFixed = "";
-    this.seeMore = false;
+    this.showAll = false;
     this.fileName = "";
     this.newName = "";
     this.content = "";
@@ -74,7 +74,7 @@ export const seeMoreItem = () => {
   state.update((s) => {
     return {
       ...s,
-      seeMore: true,
+      showAll: true,
     };
   });
 };
