@@ -23,7 +23,7 @@
         <button
           on:click={() => !item.showModal && readItem(item.name)}
           title="view this item"
-          class="hover:text-base_color w-32 cursor-pointer truncate text-left text-sm sm:w-72 sm:text-base md:w-96"
+          class="hover:text-hovertitle w-32 cursor-pointer truncate text-left text-sm sm:w-72 sm:text-base md:w-96"
           >{item.name}</button
         >
         {#if item.desc}

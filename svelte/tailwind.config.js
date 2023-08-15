@@ -10,6 +10,7 @@ export default {
       text: "#111827", // gray-900
       item_background: "#f9fafb", // gray-50
       base_color: "#0ea5e9", // sky-500
+      hovertitle: "#0284c7", // sky-600
       base_border: "#7dd3fc", // sky-300
       border: "#9ca3af", // gray-400
       desc: "#6b7280", // gray-500
