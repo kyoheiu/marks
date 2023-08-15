@@ -82,7 +82,7 @@
       on:keydown={(e) => keyDown(e)}
     />
     <button
-      class="font-semibold ml-auto w-11 rounded bg-base_color px-2 py-1 text-xs text-item_background"
+      class="ml-auto w-11 rounded bg-base_color px-2 py-1 text-xs font-semibold text-item_background"
       on:click={reviewItem}
       title="back to view">View</button
     >

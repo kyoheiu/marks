@@ -16,7 +16,7 @@
   <div
     class="flex w-64 items-baseline justify-center px-1 pb-2 sm:w-120 md:w-144"
   >
-    <div class="font-mono grow break-all leading-5">
+    <div class="grow break-all font-mono leading-5">
       {$state.fileName}
     </div>
     <button
