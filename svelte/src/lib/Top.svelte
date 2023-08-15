@@ -21,7 +21,7 @@
   {/if}
   {#if $state.items.length > DEFAULT_LIST_NUMBER && !$state.filter && !$state.queryFixed && !$state.showAll}
     <button
-      class="mb-2 rounded bg-further px-2 py-1 text-xs"
+      class="mb-4 rounded bg-further px-2 py-1 text-xs"
       on:click={seeMoreItem}
       title="show all">Show all</button
     >
