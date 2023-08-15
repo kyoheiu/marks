@@ -18,6 +18,7 @@ export default {
       saved: "#059669", // emerald-600
       edit: "#0d9488", // teal-600
       edit_border: "#5eead4", // teal-300
+      further: "#d1d5db", // gray-300
     },
     extend: {
       spacing: {

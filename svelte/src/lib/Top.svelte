@@ -6,7 +6,7 @@
 <div class="flex flex-col items-center">
   {#if !$state.queryFixed}
     <input
-      class="rounded-full w-48 mt-4 px-3 py-1 text-sm shadow-inner"
+      class="mt-4 w-48 rounded-full px-3 py-1 text-sm"
       bind:value={$state.filter}
       placeholder="Filter file name"
     />
@@ -21,7 +21,7 @@
   {/if}
   {#if $state.items.length > DEFAULT_LIST_NUMBER && !$state.filter && !$state.queryFixed && !$state.showAll}
     <button
-      class="mb-2 rounded border-2 border-border text-subtle bg-item_background px-2 py-1 text-xs"
+      class="mb-2 rounded bg-further px-2 py-1 text-xs"
       on:click={seeMoreItem}
       title="show all">Show all</button
     >
