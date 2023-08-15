@@ -94,7 +94,6 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
 
 #[debug_handler]
 async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
-    info!("Payload: {:?}", payload);
     if payload.original == payload.new {
         std::fs::write(to_path_string(&payload.new), &payload.content)?;
         write_to_index("Updated").unwrap();
