@@ -8,6 +8,7 @@ use axum::{
     Router,
 };
 use error::Error;
+use git2::{Repository, IndexAddOption};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::fs::Metadata;
@@ -96,6 +97,7 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
     info!("Payload: {:?}", payload);
     if payload.original == payload.new {
         std::fs::write(to_path_string(&payload.new), &payload.content)?;
+        write_to_index("Updated").unwrap();
         Ok(info!("Updated item: {}", payload.new))
     } else {
         if Path::new(&to_path_string(&payload.new)).exists() {
@@ -108,9 +110,11 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
                 to_path_string(&payload.new),
             )?;
             std::fs::write(to_path_string(&payload.new), payload.content)?;
+            write_to_index("Renamed").unwrap();
             Ok(info!("Renamed item: {}", payload.new))
         } else {
             std::fs::write(to_path_string(&payload.new), payload.content)?;
+            write_to_index("Created").unwrap();
             Ok(info!("Created item: {}", payload.new))
         }
     }
@@ -119,6 +123,7 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
 #[debug_handler]
 async fn remove_item(body: String) -> Result<(), Error> {
     std::fs::remove_file(to_path_string(body.trim()))?;
+    write_to_index("Removed").unwrap();
     Ok(info!("Removed item: {}", body.trim()))
 }
 
@@ -212,9 +217,35 @@ fn get_item_searched(name: &str) -> Item {
         modified,
     }
 }
+
 fn is_hidden(entry: &DirEntry) -> bool {
     entry.file_name()
          .to_str()
          .map(|s| s.starts_with('.'))
          .unwrap_or(false)
+}
+
+fn write_to_index(commit_message: &str) -> Result<(), Error> {
+    let repo = Repository::open("./data").unwrap();
+    let mut index = repo.index().unwrap();
+    index
+        .add_all(["*"].iter(), IndexAddOption::DEFAULT, None).unwrap();
+    index.write().unwrap();
+
+    let new_tree_oid = index.write_tree().unwrap();
+    let new_tree = repo.find_tree(new_tree_oid).unwrap();
+    let author = repo.signature().unwrap();
+    let head = repo.head().unwrap();
+    let parent = repo.find_commit(head.target().unwrap()).unwrap();
+    repo.commit(
+        Some("HEAD"),
+        &author,
+        &author,
+        commit_message,
+        &new_tree,
+        &[&parent],
+    )
+    .unwrap();
+
+    Ok(())
 }
