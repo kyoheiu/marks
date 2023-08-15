@@ -60,15 +60,15 @@
     }
   };
 
-  const interval = setInterval(() => {
-    const s = get(state);
-    if (s.newName && edited) {
-      save();
-      edited = false;
-    }
-  }, ms);
+  // const interval = setInterval(() => {
+  //   const s = get(state);
+  //   if (s.newName && edited) {
+  //     save();
+  //     edited = false;
+  //   }
+  // }, ms);
 
-  onDestroy(() => clearInterval(interval));
+  // onDestroy(() => clearInterval(interval));
 </script>
 
 <Toaster />
