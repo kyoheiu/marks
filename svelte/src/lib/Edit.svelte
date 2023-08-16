@@ -86,15 +86,15 @@
       on:keydown={(e) => keyDown(e)}
     />
     <button
-      class="ml-auto w-12 rounded border-2 border-baseborder bg-lightbuttontext px-2 py-1 text-xs font-semibold text-basecolor"
+      class="ml-auto mr-2 box-border h-6 w-12 rounded border-2 border-baseborder bg-lightbuttontext px-2 py-1 text-xs font-semibold text-basecolor"
       on:click={reviewItem}
       title="back to view">View</button
     >
     {#if !$state.newName && !$state.content && !edited}
-      ...
+      <div class="h-6 w-16 rounded bg-further text-center text-xs">...</div>
     {:else if edited}
       <button
-        class="ml-2 w-16 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-itembackground"
+        class="h-6 w-16 rounded bg-basecolor px-1 py-1 text-xs font-semibold text-itembackground"
         on:click={save}
         title="click / tap to manually save"
       >
@@ -102,7 +102,7 @@
       </button>
     {:else}
       <button
-        class="ml-2 w-16 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-lightbuttontext"
+        class="h-6 w-16 rounded bg-basecolor px-1 py-1 text-xs font-semibold text-lightbuttontext"
         title="click / tap to manually save"
       >
         Saved <i class="ri-checkbox-circle-fill" />
@@ -113,7 +113,7 @@
     class="h-120 w-64 flex-grow border border-further p-3 font-mono text-sm shadow-inner outline-none sm:h-144 sm:w-120 md:w-144"
     contenteditable="true"
     bind:value={$state.content}
-    placeholder="Write here."
+    placeholder="Write here. Press <C-CR> to save."
     on:input={detectChange}
     on:keydown={(e) => keyDown(e)}
   />

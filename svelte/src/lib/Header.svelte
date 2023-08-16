@@ -15,13 +15,13 @@
     {#if $state.page === Page.Top}
       <button
         on:click={addItem}
-        class="w-12 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-lightbuttontext"
+        class="h-6 w-12 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-lightbuttontext"
         >+New</button
       >
     {:else}
       <button
         on:click={addItem}
-        class="rounded border-2 border-baseborder bg-lightbuttontext px-2 py-1 text-xs font-semibold text-basecolor"
+        class="box-border rounded border-2 border-baseborder bg-lightbuttontext px-2 py-1 text-xs font-semibold text-basecolor"
         >+New</button
       >
     {/if}

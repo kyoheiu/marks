@@ -22,7 +22,7 @@
       {$state.fileName}
     </div>
     <button
-      class="ml-2 w-12 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-lightbuttontext"
+      class="ml-2 h-6 w-12 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-lightbuttontext"
       on:click={editItem}
       title="edit">Edit</button
     >
