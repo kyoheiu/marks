@@ -8,7 +8,7 @@ use axum::{
     Router,
 };
 use error::Error;
-use git2::{Repository, IndexAddOption};
+use git2::{IndexAddOption, Repository};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::fs::Metadata;
@@ -96,7 +96,7 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
 async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
     if payload.original == payload.new {
         std::fs::write(to_path_string(&payload.new), &payload.content)?;
-        write_to_index("Updated").unwrap();
+        commit(&payload.new, "Update").unwrap();
         Ok(info!("Updated item: {}", payload.new))
     } else {
         if Path::new(&to_path_string(&payload.new)).exists() {
@@ -109,11 +109,11 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
                 to_path_string(&payload.new),
             )?;
             std::fs::write(to_path_string(&payload.new), payload.content)?;
-            write_to_index("Renamed").unwrap();
+            commit(&payload.new, "Rename").unwrap();
             Ok(info!("Renamed item: {}", payload.new))
         } else {
             std::fs::write(to_path_string(&payload.new), payload.content)?;
-            write_to_index("Created").unwrap();
+            commit(&payload.new, "Create").unwrap();
             Ok(info!("Created item: {}", payload.new))
         }
     }
@@ -122,7 +122,7 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
 #[debug_handler]
 async fn remove_item(body: String) -> Result<(), Error> {
     std::fs::remove_file(to_path_string(body.trim()))?;
-    write_to_index("Removed").unwrap();
+    commit(body.trim(), "Remove").unwrap();
     Ok(info!("Removed item: {}", body.trim()))
 }
 
@@ -218,33 +218,35 @@ fn get_item_searched(name: &str) -> Item {
 }
 
 fn is_hidden(entry: &DirEntry) -> bool {
-    entry.file_name()
-         .to_str()
-         .map(|s| s.starts_with('.'))
-         .unwrap_or(false)
+    entry
+        .file_name()
+        .to_str()
+        .map(|s| s.starts_with('.'))
+        .unwrap_or(false)
 }
 
-fn write_to_index(commit_message: &str) -> Result<(), Error> {
-    let repo = Repository::open("./data").unwrap();
-    let mut index = repo.index().unwrap();
-    index
-        .add_all(["*"].iter(), IndexAddOption::DEFAULT, None).unwrap();
-    index.write().unwrap();
+fn commit(file_name: &str, commit_message: &str) -> Result<(), Error> {
+    let repo = Repository::open("./data")?;
+    let mut index = repo.index()?;
+    index.add_all(["*"].iter(), IndexAddOption::DEFAULT, None)?;
+    index.write()?;
 
-    let new_tree_oid = index.write_tree().unwrap();
-    let new_tree = repo.find_tree(new_tree_oid).unwrap();
-    let author = repo.signature().unwrap();
-    let head = repo.head().unwrap();
-    let parent = repo.find_commit(head.target().unwrap()).unwrap();
+    let new_tree_oid = index.write_tree()?;
+    let new_tree = repo.find_tree(new_tree_oid)?;
+    let author = repo.signature()?;
+    let head = repo.head()?;
+    let parent = repo.find_commit(
+        head.target()
+            .ok_or_else(|| Error::Git("Cannot get the OID.".to_string()))?,
+    )?;
     repo.commit(
         Some("HEAD"),
         &author,
         &author,
-        commit_message,
+        &format!("{}: {}", commit_message, file_name),
         &new_tree,
         &[&parent],
-    )
-    .unwrap();
+    )?;
 
     Ok(())
 }

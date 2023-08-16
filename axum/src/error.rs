@@ -9,6 +9,7 @@ pub enum Error {
     WalkDir(String),
     Json(String),
     FromUtf8(String),
+    Git(String),
     Env,
     SystemTime,
     Grep,
@@ -24,6 +25,7 @@ impl std::fmt::Display for Error {
             Error::WalkDir(s) => s,
             Error::Json(s) => s,
             Error::FromUtf8(s) => s,
+            Error::Git(s) => s,
             Error::Env => "Cannot read env SHELL.",
             Error::SystemTime => "SystemTimeError.",
             Error::Grep => "Cannot finish searching properly.",
@@ -69,6 +71,12 @@ impl From<std::env::VarError> for Error {
     }
 }
 
+impl From<git2::Error> for Error {
+    fn from(err: git2::Error) -> Self {
+        Error::Git(err.to_string())
+    }
+}
+
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
         let body = match self {
@@ -76,6 +84,7 @@ impl IntoResponse for Error {
             Error::WalkDir(s) => s,
             Error::Json(s) => s,
             Error::FromUtf8(s) => s,
+            Error::Git(s) => s,
             Error::Env => "Cannot read env SHELL.".to_string(),
             Error::SystemTime => "SystemTimeError.".to_string(),
             Error::Grep => "Cannot finish searching properly.".to_string(),
