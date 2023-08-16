@@ -12,7 +12,7 @@
     />
   {/if}
   {#if $state.queryFixed}
-    <div class="mt-2">Query: {$state.queryFixed}</div>
+    <div class="mt-4">Query: {$state.queryFixed}</div>
   {/if}
 </div>
 <div class="flex flex-col items-center">
@@ -21,7 +21,7 @@
   {/if}
   {#if $state.items.length > DEFAULT_LIST_NUMBER && !$state.filter && !$state.queryFixed && !$state.showAll}
     <button
-      class="mb-4 rounded bg-further px-2 py-1 text-xs"
+      class="mb-4 rounded border border-further bg-itembackground px-2 py-1 text-xs"
       on:click={seeMoreItem}
       title="show all">Show all</button
     >

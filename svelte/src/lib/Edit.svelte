@@ -46,6 +46,10 @@
       };
     });
 
+    toast.success("Saved.", {
+      duration: 2000,
+    });
+
     edited = false;
   };
 
@@ -75,33 +79,38 @@
 <div class="mt-2 flex min-h-full flex-col items-center justify-center">
   <div class="mb-2 flex w-full items-center py-2">
     <input
-      class="h-8 w-32 px-2 font-mono text-sm shadow-inner sm:w-64 md:w-96"
+      class="h-8 w-32 border border-further px-2 font-mono text-sm shadow-inner sm:w-64 md:w-96"
       bind:value={$state.newName}
       placeholder="file name"
       on:input={detectChange}
       on:keydown={(e) => keyDown(e)}
     />
     <button
-      class="ml-auto w-11 rounded bg-base_color px-2 py-1 text-xs font-semibold text-item_background"
+      class="ml-auto w-12 rounded border-2 border-baseborder bg-lightbuttontext px-2 py-1 text-xs font-semibold text-basecolor"
       on:click={reviewItem}
       title="back to view">View</button
     >
-    <button
-      class="ml-3 mr-2 h-6 w-6 text-sm text-subtle"
-      on:click={save}
-      title="click / tap to manually save"
-    >
-      {#if !$state.newName && !$state.content && !edited}
-        ...
-      {:else if edited}
-        <i class="ri-checkbox-blank-circle-fill text-xs text-unsaved" />
-      {:else}
-        <i class="ri-checkbox-circle-fill text-xs text-edit" />
-      {/if}
-    </button>
+    {#if !$state.newName && !$state.content && !edited}
+      ...
+    {:else if edited}
+      <button
+        class="ml-2 w-16 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-itembackground"
+        on:click={save}
+        title="click / tap to manually save"
+      >
+        Save <i class="ri-error-warning-fill" />
+      </button>
+    {:else}
+      <button
+        class="ml-2 w-16 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-lightbuttontext"
+        title="click / tap to manually save"
+      >
+        Saved <i class="ri-checkbox-circle-fill" />
+      </button>
+    {/if}
   </div>
   <textarea
-    class="h-120 w-64 flex-grow p-3 font-mono text-sm shadow-inner outline-none sm:h-144 sm:w-120 md:w-144"
+    class="h-120 w-64 flex-grow border border-further p-3 font-mono text-sm shadow-inner outline-none sm:h-144 sm:w-120 md:w-144"
     contenteditable="true"
     bind:value={$state.content}
     placeholder="Write here."

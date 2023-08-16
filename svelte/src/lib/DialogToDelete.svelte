@@ -40,17 +40,16 @@
     <div on:click|stopPropagation>
       <div class="mb-2 break-all p-2">
         Are you sure to delete <span class="underline">{item}</span>?<br />
-        This action is irreversible.
       </div>
-      <hr class="my-4 text-border" />
+      <hr class="text-border my-4" />
       <!-- svelte-ignore a11y-autofocus -->
       <div class="flex justify-between">
         <button class="px-1 text-sm" on:click={() => dialog.close()}
-          >cancel</button
+          >Cancel</button
         >
         <button
-          class="rounded bg-warning px-2 py-1 text-sm text-item_background"
-          on:click={() => deleteItem()}>delete</button
+          class="rounded bg-warning px-2 py-1 text-sm text-itembackground"
+          on:click={() => deleteItem()}>Delete</button
         >
       </div>
     </div>
