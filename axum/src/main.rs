@@ -96,7 +96,7 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
 async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
     if payload.original == payload.new {
         std::fs::write(to_path_string(&payload.new), &payload.content)?;
-        commit(&payload.new, "Update").unwrap();
+        commit(&payload.new, "Update")?;
         Ok(info!("Updated item: {}", payload.new))
     } else {
         if Path::new(&to_path_string(&payload.new)).exists() {
@@ -109,11 +109,11 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
                 to_path_string(&payload.new),
             )?;
             std::fs::write(to_path_string(&payload.new), payload.content)?;
-            commit(&payload.new, "Rename").unwrap();
+            commit(&payload.new, "Rename")?;
             Ok(info!("Renamed item: {}", payload.new))
         } else {
             std::fs::write(to_path_string(&payload.new), payload.content)?;
-            commit(&payload.new, "Create").unwrap();
+            commit(&payload.new, "Create")?;
             Ok(info!("Created item: {}", payload.new))
         }
     }
@@ -122,7 +122,7 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
 #[debug_handler]
 async fn remove_item(body: String) -> Result<(), Error> {
     std::fs::remove_file(to_path_string(body.trim()))?;
-    commit(body.trim(), "Remove").unwrap();
+    commit(body.trim(), "Remove")?;
     Ok(info!("Removed item: {}", body.trim()))
 }
 
