@@ -98,14 +98,14 @@
         on:click={save}
         title="click / tap to manually save"
       >
-        Save <i class="ri-error-warning-fill" />
+        Save <i class="ri-error-warning-line" />
       </button>
     {:else}
       <button
         class="h-6 w-16 rounded bg-basecolor px-1 py-1 text-xs font-semibold text-lightbuttontext"
         title="click / tap to manually save"
       >
-        Saved <i class="ri-checkbox-circle-fill" />
+        Saved <i class="ri-check-line" />
       </button>
     {/if}
   </div>
