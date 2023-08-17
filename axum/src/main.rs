@@ -1,7 +1,7 @@
 mod error;
 
 use axum::debug_handler;
-use axum::extract::{Json, Query};
+use axum::extract::{Json, Query, State};
 use axum::response::{Html, IntoResponse};
 use axum::{
     routing::{get, post},
@@ -18,12 +18,46 @@ use tower_http::services::ServeDir;
 use tracing::{error, info};
 use walkdir::DirEntry;
 
+const DATA_PATH: &str = "./data";
+
 #[derive(Clone)]
-struct Core {}
+struct Core {
+    git_user: String,
+    git_email: String,
+}
 
 impl Core {
     fn default() -> Result<Self, Error> {
-        Ok(Core {})
+        Ok(Core {
+            git_user: std::env::var("MARKS_GIT_USER").unwrap_or("marks".to_string()),
+            git_email: std::env::var("MARKS_GIT_EMAIL").unwrap_or("git@example.com".to_string()),
+        })
+    }
+
+    fn commit(&self, file_name: &str, commit_message: &str) -> Result<(), Error> {
+        let repo = Repository::open(DATA_PATH)?;
+        let mut index = repo.index()?;
+        index.add_all(["*"].iter(), IndexAddOption::DEFAULT, None)?;
+        index.write()?;
+
+        let new_tree_oid = index.write_tree()?;
+        let new_tree = repo.find_tree(new_tree_oid)?;
+        let author = git2::Signature::now(&self.git_user, &self.git_email)?;
+        let head = repo.head()?;
+        let parent = repo.find_commit(
+            head.target()
+                .ok_or_else(|| Error::Git("Cannot get the OID.".to_string()))?,
+        )?;
+        repo.commit(
+            Some("HEAD"),
+            &author,
+            &author,
+            &format!("{}: {}", commit_message, file_name),
+            &new_tree,
+            &[&parent],
+        )?;
+
+        Ok(())
     }
 }
 
@@ -79,7 +113,7 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
         Ok(file.into_response())
     } else {
         let mut result: Vec<Item> = Vec::new();
-        let walker = walkdir::WalkDir::new("./data").into_iter();
+        let walker = walkdir::WalkDir::new(DATA_PATH).into_iter();
         for item in walker.filter_entry(|x| !is_hidden(x)) {
             let item = item?;
             if item.file_type().is_dir() {
@@ -93,10 +127,10 @@ async fn read_item(Query(q): Query<BTreeMap<String, String>>) -> Result<impl Int
 }
 
 #[debug_handler]
-async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
+async fn post_item(State(core): State<Core>, Json(payload): Json<Payload>) -> Result<(), Error> {
     if payload.original == payload.new {
         std::fs::write(to_path_string(&payload.new), &payload.content)?;
-        commit(&payload.new, "Update")?;
+        core.commit(&payload.new, "Update")?;
         Ok(info!("Updated item: {}", payload.new))
     } else {
         if Path::new(&to_path_string(&payload.new)).exists() {
@@ -109,20 +143,20 @@ async fn post_item(Json(payload): Json<Payload>) -> Result<(), Error> {
                 to_path_string(&payload.new),
             )?;
             std::fs::write(to_path_string(&payload.new), payload.content)?;
-            commit(&payload.new, "Rename")?;
+            core.commit(&payload.new, "Rename")?;
             Ok(info!("Renamed item: {}", payload.new))
         } else {
             std::fs::write(to_path_string(&payload.new), payload.content)?;
-            commit(&payload.new, "Create")?;
+            core.commit(&payload.new, "Create")?;
             Ok(info!("Created item: {}", payload.new))
         }
     }
 }
 
 #[debug_handler]
-async fn remove_item(body: String) -> Result<(), Error> {
+async fn remove_item(State(core): State<Core>, body: String) -> Result<(), Error> {
     std::fs::remove_file(to_path_string(body.trim()))?;
-    commit(body.trim(), "Remove")?;
+    core.commit(body.trim(), "Remove")?;
     Ok(info!("Removed item: {}", body.trim()))
 }
 
@@ -169,7 +203,7 @@ fn to_modified(metadata: &Metadata) -> u64 {
 }
 
 fn to_path_string(file_name: &str) -> String {
-    format!("./data/{}", file_name)
+    format!("{}/{}", DATA_PATH, file_name)
 }
 
 fn get_item(item: &DirEntry) -> Item {
@@ -223,30 +257,4 @@ fn is_hidden(entry: &DirEntry) -> bool {
         .to_str()
         .map(|s| s.starts_with('.'))
         .unwrap_or(false)
-}
-
-fn commit(file_name: &str, commit_message: &str) -> Result<(), Error> {
-    let repo = Repository::open("./data")?;
-    let mut index = repo.index()?;
-    index.add_all(["*"].iter(), IndexAddOption::DEFAULT, None)?;
-    index.write()?;
-
-    let new_tree_oid = index.write_tree()?;
-    let new_tree = repo.find_tree(new_tree_oid)?;
-    let author = repo.signature()?;
-    let head = repo.head()?;
-    let parent = repo.find_commit(
-        head.target()
-            .ok_or_else(|| Error::Git("Cannot get the OID.".to_string()))?,
-    )?;
-    repo.commit(
-        Some("HEAD"),
-        &author,
-        &author,
-        &format!("{}: {}", commit_message, file_name),
-        &new_tree,
-        &[&parent],
-    )?;
-
-    Ok(())
 }
