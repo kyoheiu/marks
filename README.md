@@ -3,7 +3,7 @@ Git-powered self-hostable online text editor.
 
 ## features
 - Everything is text: In `data` directory you store text files, and marks enables you to edit or delete them, or add a new one.
-- When saving, the change will be automatically added and commited by git.
+- On save, the change will be automatically added and commited by git.
 - No fancy editing feature such as WYSIWYG.
 - No tags, no categories, no subdirectories.
 - Texts with `.md` extension are converted to html in the view mode.
@@ -14,6 +14,12 @@ Git-powered self-hostable online text editor.
 ## deploy
 
 1. If not initialized, `git init` in your `data` directory.
+   To commit on save, add `user.name` and `user.config` to `data/.git/config` like this:
+```
+[user]
+    name = Kyohei Uto
+    email = "im@kyoheiu.dev"
+```
 
 2. Use `docker compose up -d` with i.e. the following `docker-compose.yml`:
 
