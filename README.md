@@ -2,26 +2,25 @@
 Git-powered self-hostable online text editor.
 
 ## features
-- Everything is text: In `data` directory you store text files, and marks enables you to edit or delete them, or add a new one.
+- In `data` directory you store text files, and marks enables you to edit or delete them, or add a new one.
 - On save, the change will be automatically added and commited by git.
 - No fancy editing feature such as WYSIWYG.
 - No tags, no categories, no subdirectories.
 - Texts with `.md` extension are converted to html in the view mode.
-- Search with `ripgrep` (supports regex pattern).
-- Filter file name.
+- Search file name and contents with `fd-find` and `ripgrep` (regex pattern supported).
 - Lightweight: Compressed docker image size is ~50MB.
 
 ## deploy
 
 1. If not initialized, `git init` in your `data` directory.
-   To commit on save, add `user.name` and `user.config` to `data/.git/config` like this:
+   To commit on save, add `user.name` and `user.email` to `data/.git/config` like this:
 ```
 [user]
     name = Kyohei Uto
     email = "im@kyoheiu.dev"
 ```
 
-2. Use `docker compose up -d` with i.e. the following `docker-compose.yml`:
+2. Use `docker compose up -d` with `docker-compose.yml`. For example:
 
 ```
 version: '3.3'
@@ -38,7 +37,7 @@ services:
         ports:
             - '8080:8080'
         container_name: marks
-        image: 'kyoheiudev/marks:0.4.0'
+        image: 'kyoheiudev/marks:0.5.0'
         logging:
           driver: json-file
           options:
