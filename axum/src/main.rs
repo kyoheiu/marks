@@ -172,7 +172,7 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
     let mut search_result = BTreeSet::new();
 
     //exec fd
-    if let Ok(output) = std::process::Command::new("fd")
+    if let Ok(output) = std::process::Command::new("fdfind")
         .arg(q)
         .arg(DATA_PATH)
         .output()
