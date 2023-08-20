@@ -14,7 +14,7 @@
 </script>
 
 <div class="mt-4 flex flex-col items-center">
-  {#each $state.filter ? $state.items.filter( (x) => x.name.includes($state.filter) ) : $state.showAll ? $state.items : $state.items.slice(0, DEFAULT_LIST_NUMBER) as item}
+  {#each $state.showAll ? $state.items : $state.items.slice(0, DEFAULT_LIST_NUMBER) as item}
     <div
       class="mb-4 flex h-20 w-64 items-center rounded bg-itembackground px-2 shadow sm:w-120 md:w-144"
     >

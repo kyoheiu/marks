@@ -12,7 +12,7 @@
     const s = get(state);
     const fileName = s.fileName;
     const newName = s.newName;
-    if (s.newName === "" || !s.newName) {
+    if (fileName === "" && !newName) {
       toast.error("File name required.", {
         duration: 2000,
       });
@@ -60,7 +60,6 @@
   const keyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter" && e.ctrlKey) {
       save();
-      edited = false;
     }
   };
 

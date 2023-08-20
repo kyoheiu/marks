@@ -5,7 +5,6 @@ export const DEFAULT_LIST_NUMBER = 10;
 export class State {
   page: Page;
   items: Item[] | null;
-  filter: string | null;
   query: string | null;
   queryFixed: string | null;
   showAll: boolean;
@@ -16,7 +15,6 @@ export class State {
   constructor() {
     this.page = Page.Top;
     this.items = [];
-    this.filter = "";
     this.query = "";
     this.queryFixed = "";
     this.showAll = false;
