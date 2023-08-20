@@ -16,14 +16,14 @@
       <button
         on:click={addItem}
         title="add a new file"
-        class="h-6 rounded bg-new px-2 py-1 text-xs font-semibold text-lightbuttontext"
+        class="h-6 rounded bg-basecolor px-2 py-1 text-xs font-semibold text-lightbuttontext"
         >+New</button
       >
     {:else}
       <button
         on:click={addItem}
         title="add a new file"
-        class="h-6 rounded border-2 border-newborder bg-lightbuttontext px-2 py-1 text-xs font-semibold text-new"
+        class="h-6 rounded border border-further bg-lightbuttontext px-2 py-1 text-xs font-semibold text-basecolor"
         >+New</button
       >
     {/if}
