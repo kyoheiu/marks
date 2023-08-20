@@ -10,7 +10,7 @@ use axum::{
 use error::Error;
 use git2::{IndexAddOption, Repository};
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs::Metadata;
 use std::path::Path;
 use std::time::UNIX_EPOCH;
@@ -162,35 +162,59 @@ async fn remove_item(State(core): State<Core>, body: String) -> Result<(), Error
 
 #[debug_handler]
 async fn search(body: String) -> Result<impl IntoResponse, Error> {
-    let mut rg_result = Vec::new();
     let q = body.split_whitespace().collect::<Vec<&str>>();
+    if q.is_empty() {
+        return Err(Error::Query);
+    }
+    //Currently single pattern is supported.
+    let q = q[0];
     info!("query: {:?}", q);
+    let mut search_result = BTreeSet::new();
+
+    //exec fd
+    if let Ok(output) = std::process::Command::new("fd")
+        .arg(q)
+        .arg(DATA_PATH)
+        .output()
+    {
+        let output = String::from_utf8(output.stdout)?;
+        info!(output);
+        for file_path in output.lines() {
+            if let Some(file_name) = file_path.split('/').last() {
+                search_result.insert(file_name.to_string());
+            }
+        }
+    } else {
+        error!("fd did not work successfully.");
+        return Err(Error::Fd);
+    }
+
+    //exec ripgrep
     if let Ok(output) = std::process::Command::new("rg")
         .arg("-l")
-        .args(q)
-        .arg("./data")
+        .arg(q)
+        .arg(DATA_PATH)
         .output()
     {
         let output = String::from_utf8(output.stdout)?;
         for item in output.lines() {
             if let Some(file_path) = item.lines().next() {
                 if let Some(file_name) = file_path.split('/').last() {
-                    rg_result.push(file_name.to_string());
+                    search_result.insert(file_name.to_string());
                 }
             }
         }
-
-        let mut result = Vec::new();
-        for file_name in rg_result {
-            result.push(get_item_searched(&file_name));
-        }
-
-        result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
-        Ok(Json(result).into_response())
     } else {
         error!("ripgrep did not work successfully.");
-        Err(Error::Grep)
+        return Err(Error::Grep);
     }
+    let mut result = Vec::new();
+    for file_name in search_result {
+        result.push(get_item_searched(&file_name));
+    }
+
+    result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
+    Ok(Json(result).into_response())
 }
 
 fn to_modified(metadata: &Metadata) -> u64 {

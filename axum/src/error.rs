@@ -12,6 +12,8 @@ pub enum Error {
     Git(String),
     Env,
     SystemTime,
+    Query,
+    Fd,
     Grep,
     SameName,
 }
@@ -28,7 +30,9 @@ impl std::fmt::Display for Error {
             Error::Git(s) => s,
             Error::Env => "Cannot read env SHELL.",
             Error::SystemTime => "SystemTimeError.",
-            Error::Grep => "Cannot finish searching properly.",
+            Error::Query => "Query must be a pattern.",
+            Error::Fd => "Cannot finish searching by ripgrep properly.",
+            Error::Grep => "Cannot finish searching by fd properly.",
             Error::SameName => "A file with the same name exists.",
         };
         write!(f, "{}", printable)
@@ -87,7 +91,9 @@ impl IntoResponse for Error {
             Error::Git(s) => s,
             Error::Env => "Cannot read env SHELL.".to_string(),
             Error::SystemTime => "SystemTimeError.".to_string(),
-            Error::Grep => "Cannot finish searching properly.".to_string(),
+            Error::Query => "Query must be a pattern.".to_string(),
+            Error::Fd => "Cannot finish searching by fd properly.".to_string(),
+            Error::Grep => "Cannot finish searching by ripgrep properly.".to_string(),
             Error::SameName => "A file with the same name exists.".to_string(),
         };
         (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()
