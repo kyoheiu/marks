@@ -1,5 +1,6 @@
 mod error;
 
+use axum::body::StreamBody;
 use axum::debug_handler;
 use axum::extract::{Json, Query, State};
 use axum::response::{Html, IntoResponse};
@@ -9,11 +10,13 @@ use axum::{
 };
 use error::Error;
 use git2::{IndexAddOption, Repository};
+use http::{header, HeaderMap};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs::Metadata;
 use std::path::Path;
 use std::time::UNIX_EPOCH;
+use tokio_util::io::ReaderStream;
 use tower_http::services::ServeDir;
 use tracing::{error, info};
 use walkdir::DirEntry;
@@ -90,7 +93,8 @@ async fn main() -> Result<(), Error> {
     let app = Router::new()
         .route("/health", get(health))
         .route("/item", get(read_item).post(post_item).delete(remove_item))
-        .route("/api/search", post(search))
+        .route("/item/search", post(search))
+        .route("/item/download", get(download))
         .nest_service("/", ServeDir::new("static"))
         .with_state(core);
 
@@ -215,6 +219,26 @@ async fn search(body: String) -> Result<impl IntoResponse, Error> {
 
     result.sort_by(|a, b| b.modified.partial_cmp(&a.modified).unwrap());
     Ok(Json(result).into_response())
+}
+
+#[debug_handler]
+async fn download(Query(q): Query<BTreeMap<String, String>>) -> Result<impl IntoResponse, Error> {
+    if let Some(file_name) = q.get("item") {
+        let file = tokio::fs::File::open(to_path_string(file_name)).await?;
+        let stream = ReaderStream::new(file);
+        let body = StreamBody::new(stream);
+
+        let mut headers = HeaderMap::new();
+        headers.insert(header::CONTENT_TYPE, "text/plain; charset=utf-8".parse()?);
+        headers.insert(
+            header::CONTENT_DISPOSITION,
+            format!("attachment; filename=\"{}\"", file_name).parse()?,
+        );
+
+        Ok((headers, body))
+    } else {
+        Err(Error::Io("Possibly file name does not exist.".to_string()))
+    }
 }
 
 fn to_modified(metadata: &Metadata) -> u64 {

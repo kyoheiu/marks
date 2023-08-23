@@ -10,6 +10,7 @@ pub enum Error {
     Json(String),
     FromUtf8(String),
     Git(String),
+    Header(String),
     Env,
     SystemTime,
     Query,
@@ -28,6 +29,7 @@ impl std::fmt::Display for Error {
             Error::Json(s) => s,
             Error::FromUtf8(s) => s,
             Error::Git(s) => s,
+            Error::Header(s) => s,
             Error::Env => "Cannot read env SHELL.",
             Error::SystemTime => "SystemTimeError.",
             Error::Query => "Query must be a pattern.",
@@ -81,6 +83,12 @@ impl From<git2::Error> for Error {
     }
 }
 
+impl From<http::header::InvalidHeaderValue> for Error {
+    fn from(err: http::header::InvalidHeaderValue) -> Self {
+        Error::Header(err.to_string())
+    }
+}
+
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
         let body = match self {
@@ -89,6 +97,7 @@ impl IntoResponse for Error {
             Error::Json(s) => s,
             Error::FromUtf8(s) => s,
             Error::Git(s) => s,
+            Error::Header(s) => s,
             Error::Env => "Cannot read env SHELL.".to_string(),
             Error::SystemTime => "SystemTimeError.".to_string(),
             Error::Query => "Query must be a pattern.".to_string(),
