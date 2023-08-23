@@ -5,6 +5,7 @@
   import DialogToDelete from "./DialogToDelete.svelte";
   const converter = new Showdown.Converter();
 
+  let showMenu = false;
   let showModal = false;
 
   if (history.scrollRestoration) {
@@ -14,7 +15,7 @@
 
 <div class="mt-4 flex justify-center text-sm">
   <div
-    class="flex w-64 items-baseline justify-center px-1 pb-2 sm:w-120 md:w-144"
+    class="flex w-64 items-center justify-center px-1 pb-2 sm:w-120 md:w-144"
   >
     <div
       class="grow break-all border-l-4 border-baseborder pl-2 font-mono leading-5"
@@ -26,14 +27,31 @@
       on:click={editItem}
       title="edit">Edit</button
     >
-    &nbsp; &nbsp;
-    <button
-      class="ml-2 text-xs text-subtle"
-      on:click={() => (showModal = true)}
-      title="delete"
-    >
-      Delete
-    </button>
+    <div class="relative ml-2">
+      <button
+      class="text-xs"
+        on:click={() => {
+          showMenu = !showMenu;
+        }}>•••</button
+      >
+      {#if showMenu}
+        <div class=" flex flex-col items-end p-2 absolute right-0 top-8 rounded bg-itembackground drop-shadow-xl ">
+          <div>
+            <a
+              class="text-xs no-underline"
+              href="/item/download?item={$state.fileName}">Download</a
+            >
+          </div>
+          <button
+            class="text-xs text-warning mt-2"
+            on:click={() => (showModal = true)}
+            title="delete"
+          >
+            Delete
+          </button>
+        </div>
+      {/if}
+    </div>
   </div>
   <DialogToDelete bind:showModal item={$state.fileName} />
 </div>
