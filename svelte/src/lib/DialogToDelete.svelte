@@ -39,7 +39,7 @@
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div on:click|stopPropagation>
       <div class="mb-2 break-all p-2">
-        Are you sure to delete <span class="underline">{item}</span>?<br />
+        Are you sure to delete <b>{item}</b>?<br />
       </div>
       <hr class="text-border my-4" />
       <!-- svelte-ignore a11y-autofocus -->
