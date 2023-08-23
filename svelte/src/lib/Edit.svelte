@@ -93,18 +93,19 @@
       <div class="h-6 w-16 rounded bg-further text-center text-xs">...</div>
     {:else if edited}
       <button
-        class="h-6 w-16 rounded bg-basecolor px-1 py-1 text-xs font-semibold text-itembackground"
+        class="relative h-6 w-16 rounded bg-basecolor px-1 py-1 text-xs font-semibold text-itembackground"
         on:click={save}
         title="click / tap to manually save"
       >
-        Save <i class="ri-error-warning-line" />
+        Save
+        <div class="absolute bottom-4 left-14 w-3 h-3 rounded-full bg-warning border-2 border-background" />
       </button>
     {:else}
       <button
         class="h-6 w-16 rounded bg-basecolor px-1 py-1 text-xs font-semibold text-lightbuttontext"
         title="click / tap to manually save"
       >
-        Saved <i class="ri-check-line" />
+        Saved &#10003;
       </button>
     {/if}
   </div>

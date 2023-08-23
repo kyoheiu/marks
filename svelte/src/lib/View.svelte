@@ -27,7 +27,7 @@
       on:click={editItem}
       title="edit">Edit</button
     >
-    <div class="relative ml-2">
+    <div class="relative ml-4">
       <button
       class="text-xs"
         on:click={() => {
