@@ -1,5 +1,4 @@
 <script lang="ts">
-  import "remixicon/fonts/remixicon.css";
   import { onMount } from "svelte";
   import { Page, state, resetItem } from "./lib/stores";
   import Footer from "./lib/Footer.svelte";
