@@ -28,11 +28,11 @@
       >
     {/if}
     &nbsp; &nbsp;
-    <div class="relative ml-auto">
-      <i class="ri-search-line absolute left-1 top-1 text-subtle" />
+    <div class="ml-auto">
       <input
         name="search"
-        class="w-32 rounded-full bg-background py-1 pl-6 pr-3"
+        placeholder="Search"
+        class="w-32 rounded-full bg-background px-3 py-1"
         bind:value={$state.query}
         on:keydown={(e) => e.key === "Enter" && searchItem()}
       />
