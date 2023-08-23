@@ -38,12 +38,12 @@
         <div class=" flex flex-col items-end p-2 absolute right-0 top-8 rounded bg-itembackground drop-shadow-xl ">
           <div>
             <a
-              class="text-xs no-underline"
+              class="text-sm no-underline"
               href="/item/download?item={$state.fileName}">Download</a
             >
           </div>
           <button
-            class="text-xs text-warning mt-2"
+            class="text-sm text-warning mt-2"
             on:click={() => (showModal = true)}
             title="delete"
           >
