@@ -118,7 +118,7 @@ export const reviewItem = () => {
 
 export const searchItem = async () => {
   const query = get(state).query;
-  const res = await fetch("/api/search", {
+  const res = await fetch("/item/search", {
     method: "POST",
     body: query,
   });
